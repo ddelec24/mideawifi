@@ -1,0 +1,13 @@
+<div style="padding:5px; min-width:30px; min-height:30px;" class="cmd #history# container-fluid tooltips cmd-widget" data-type="info" data-subtype="string" data-cmd_id="#id#" data-cmd_uid="#uid#" data-version="#version#" data-eqLogic_id="#eqLogic_id#">
+	<center>
+	  <div class="title #hide_name#">
+		<div class="cmdName">#name_display#</div>
+		</div>
+	  <div class="cmdInfo#uid#"></div>
+	</center>
+    <script>
+        var arrayMode = ['auto', 'cool','dry','heat','fan_only'];
+        $('#valueString#id#').empty().text(arrayMode[parseInt(#state#) - 1]);
+    </script>
+	<span id="valueString#id#"></span>
+</div>
