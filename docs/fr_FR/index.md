@@ -22,7 +22,8 @@ Vous pouvez visualiser le ou les équipements trouvés et cliquer pour rentrer d
 
 # Configuration d'un équipement
 
-![CONFIGURATION EQUIPEMENT](../img/conf_equipement.png)
+![CONFIGURATION EQUIPEMENT](../img/conf_equipement.png)  
+En plus des réglages habituels de tous les équipements, vous pourrez modifier le port si ce n'est pas celui par défaut et aussi bloquer le type de ventilation pour n'avoir que les choix compatibles avec votre matériel sur l'affichage dashboard.
 
 # FAQ
 - Je ne trouve aucune clim
