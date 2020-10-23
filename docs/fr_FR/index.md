@@ -8,21 +8,21 @@ lang: fr_FR
 
 Mideawifi permet le contrôle des climatiseurs **[Midea](https://fr.wikipedia.org/wiki/Midea)** avec modules Wi-Fi.
 
-![DASHBOARD VIEW](/img/equipement-dashboard.png)
+![DASHBOARD VIEW](../img/equipement-dashboard.png)
 
 # Configuration générale
 
-Il faut tout d'abord installer les dépendances pour que le plugin fonctionne correctement.
-![DEPENDANCES](/img/dependances.png)
+Il faut tout d'abord installer les dépendances pour que le plugin fonctionne correctement.  
+![DEPENDANCES](../img/dependances.png)
 
-Lorsque c'est **OK**, vous pouvez cliquer sur Lancer un scan, bouton par défaut sur l'accueil du plugin.
-![LANCER SCAN](/img/lancer_scan.png)
+Lorsque c'est **OK**, vous pouvez cliquer sur Lancer un scan, bouton par défaut sur l'accueil du plugin.  
+![LANCER SCAN](../img/lancer_scan.png)
 
 Vous pouvez visualiser le ou les équipements trouvés et cliquer pour rentrer dans leurs configurations.
 
 # Configuration d'un équipement
 
-![CONFIGURATION EQUIPEMENT](/img/conf_equipement.png)
+![CONFIGURATION EQUIPEMENT](../img/conf_equipement.png)
 
 # FAQ
 - Je ne trouve aucune clim
