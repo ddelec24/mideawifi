@@ -37,18 +37,17 @@ En plus des réglages habituels de tous les équipements, vous pourrez modifier 
 
 
 
-### Scripts Tiers
+# Scripts Tiers
 
 Mideawifi repose sur le script tiers python **msmart** en version *0.1.23*
 Vous pouvez trouver le code github original ici:  [mac-zhou/msmart](https://github.com/mac-zhou/midea-msmart/)
 
-### Informations complémentaires
+# Informations complémentaires
 
  - Le plugin n'a pas été testé avec tous les climatiseurs et avec toutes les configurations logicielles et réseaux. Merci de faire un Issue sur [GitHub](https://github.com/ddelec24/mideawifi/issues) ou un message sur le forum [Community Jeedom](https://community.jeedom.com/) si jamais vous constatez un dysfonctionnement
 
 
 
-License
-----
+# License
 
 GPL-2.0
