@@ -98,7 +98,8 @@ function runMideaDiscovery() {
 			for (var i in data.result.devices) {
 				html += '<span class="label label-info cursor" style="font-size:1.2em;">';
 				html += '<a href="index.php?v=d&m=mideawifi&p=mideawifi&id='+data.result.devices[i].eqlogic+'">';
-				html += data.result.devices[i].ip + ' (id=' + data.result.devices[i].id + ')';
+              	var supportedMsg = (data.result.devices[i].supported == "unsupported") ? "Climatiseur détecté mais à priori non supporté!" : "";
+				html += data.result.devices[i].ip + ' (id=' + data.result.devices[i].id + ') ' + supportedMsg ;
 				html += '</a></span>';
 				html += '<br /><br />';
 			}

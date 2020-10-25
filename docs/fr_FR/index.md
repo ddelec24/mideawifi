@@ -15,6 +15,8 @@ Voici une liste non exhaustive de marques ayant parfois des contrôleurs électr
 - Johnson  
 - Riello  
 
+## Aperçu  
+
 ![DASHBOARD VIEW](../img/equipement-dashboard.png)
 
 # Configuration générale
