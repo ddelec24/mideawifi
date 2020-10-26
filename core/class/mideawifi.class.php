@@ -128,7 +128,7 @@ class mideawifi extends eqLogic {
 
 	/*     * *********************Méthodes d'instance************************* */
 
-  	public static function cron5() {
+  	public static function cron10() {
     	
 		foreach (self::byType('mideawifi') as $eqLogicMideawifi) {
           	//log::add('mideawifi', 'debug', 'valeur enable' . $eqLogicMideawifi->getIsEnable());
