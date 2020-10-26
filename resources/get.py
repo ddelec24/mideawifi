@@ -7,14 +7,15 @@ import sys
 
 logging.basicConfig(level=logging.WARN)
 
-if len(sys.argv) != 3:
-	sys.exit("2 args required")
+if len(sys.argv) != 4:
+	sys.exit("3 args required")
 
 ip = sys.argv[1]
 id = int(sys.argv[2])
+port = int(sys.argv[3])
 
 
-c = midea_device(ip, id, 6444)
+c = midea_device(ip, id, port)
 device = c.setup()
 # Refresh the object with the actual state by querying it
 device.refresh()

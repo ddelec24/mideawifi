@@ -602,10 +602,8 @@ class mideawifi extends eqLogic {
 		//$get = "{'name': '192.168.102.80', 'fan_speed': <fan_speed_enum.High: 80>, 'turbo_mode': True, 'prompt_tone': False, 'outdoor_temperature': 38.0, 'power_state': True, 'id': '140f00000015', 'target_temperature': 24.0, 'operational_mode': <operational_mode_enum.auto: 1>, 'swing_mode': <swing_mode_enum.Off: 0>, 'indoor_temperature': 26.0, 'eco_mode': False}";
 		$ip = $this->getConfiguration('ip');
 		$id = $this->getConfiguration('id');
-		$get = shell_exec("python3 ../../plugins/mideawifi/resources/get.py $ip $id 2>&1");
-
-
-			//log::add('mideawifi', 'debug', 'get Infos Brut = ' . $get);
+      	$port = $this->getConfiguration('port');
+		$get = shell_exec("python3 ../../plugins/mideawifi/resources/get.py $ip $id $port 2>&1");
 
 		$formattedGet = strtolower(preg_replace("/<(?:.*)([0-9]+)>/mU", "$1", $get, -1)); // fix json format
 		//$formattedGet = preg_replace("/: ,/", ": false,", $formattedGet, -1); // fix json empty value for swingmode
