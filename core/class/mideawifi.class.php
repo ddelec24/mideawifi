@@ -128,14 +128,14 @@ class mideawifi extends eqLogic {
 
 	/*     * *********************Méthodes d'instance************************* */
 
-  	public static function cron10() {
+  	public static function cron5() {
     	
 		foreach (self::byType('mideawifi') as $eqLogicMideawifi) {
           	//log::add('mideawifi', 'debug', 'valeur enable' . $eqLogicMideawifi->getIsEnable());
           	if($eqLogicMideawifi->getIsEnable() == 1)
 				$eqLogicMideawifi->updateInfos();
 
-			log::add('mideawifi', 'debug', 'update clim ' . $eqLogicMideawifi->Name());
+			log::add('mideawifi', 'debug', 'update clim ' . $eqLogicMideawifi->getName());
 		}
     }
   
