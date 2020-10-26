@@ -135,7 +135,7 @@ class mideawifi extends eqLogic {
           	if($eqLogicMideawifi->getIsEnable() == 1)
 				$eqLogicMideawifi->updateInfos();
 
-			log::add('mideawifi', 'debug', 'update clim ' . $eqLogicMideawifi->Name());
+			log::add('mideawifi', 'debug', 'update clim ' . $eqLogicMideawifi->getName());
 		}
     }
   
