@@ -128,6 +128,17 @@ class mideawifi extends eqLogic {
 
 	/*     * *********************Méthodes d'instance************************* */
 
+  	public static function cron10() {
+    	
+		foreach (self::byType('mideawifi') as $eqLogicMideawifi) {
+          	//log::add('mideawifi', 'debug', 'valeur enable' . $eqLogicMideawifi->getIsEnable());
+          	if($eqLogicMideawifi->getIsEnable() == 1)
+				$eqLogicMideawifi->updateInfos();
+
+			log::add('mideawifi', 'debug', 'update clim ' . $eqLogicMideawifi->Name());
+		}
+    }
+  
 	public function preInsert() {
 
 	}
@@ -603,7 +614,7 @@ class mideawifi extends eqLogic {
 		$ip = $this->getConfiguration('ip');
 		$id = $this->getConfiguration('id');
       	$port = $this->getConfiguration('port');
-		$get = shell_exec("python3 ../../plugins/mideawifi/resources/get.py $ip $id $port 2>&1");
+		$get = shell_exec("python3 " . __DIR__ . "/../../resources/get.py $ip $id $port 2>&1");
 
 		$formattedGet = strtolower(preg_replace("/<(?:.*)([0-9]+)>/mU", "$1", $get, -1)); // fix json format
 		//$formattedGet = preg_replace("/: ,/", ": false,", $formattedGet, -1); // fix json empty value for swingmode
