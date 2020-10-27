@@ -55,10 +55,12 @@
 	INFO:msmart.cli: Found a supported '0xac' at 192.168.1.121 - id: 12345678912345 - sn: P0000000Q1B000000000000000 - ssid: net_ac_0000
 	INFO:msmart.cli:Midea Local Data 192.168.1.122 5a5a011178007a8000000443a0ea6912359b4ccea7d8377b9f3f959617e697909952e6f0a4f351f92023240a63ab1b7a160d4ebaf4adf202790e8d4f8ac64c80be110acf231d558fe2e9225266434fec7c63b094f0ec04c4a3745f535b40d3cbedb5207834ba575182333d3c39badb1af4b5f70a6609bbc18
 	INFO:msmart.cli: Found a supported '0xac' at 192.168.11.122 - id: 98765432198765 - sn: P0000000Q1B000000000000000 - ssid: net_ac_0000";*/
-      /*
+      
       // exemple clim avec msmart 0.1.23
-      $raw = "INFO:msmart.cli: Found a supported device - type: '0xac' - version: V2 - ip: 192.168.1.44 - port: 6444 - id: 32132165465478 - sn: 000000P0000000111111111111110000 - ssid: net_ac_0000";
-      */
+      /*$raw = "INFO:msmart.cli: Found a supported device - type: '0xac' - version: V2 - ip: 192.168.1.44 - port: 6444 - id: 32132165465478 - sn: 000000P0000000111111111111110000 - ssid: net_ac_0000
+      INFO:msmart.cli: Found an unsupported device - type: '0xac' - version: V2 - ip: 192.168.1.45 - port: 6444 - id: 32132165465477 - sn: 000000P0000000111111111111110000 - ssid: net_ac_0000
+      INFO:msmart.cli: Found a supported device - type: '0xac' - version: V2 - ip: 192.168.1.46 - port: 6444 - id: 32132165465474 - sn: 000000P0000000111111111111110000 - ssid: net_ac_0000";*/
+      
       
 
 

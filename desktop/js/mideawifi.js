@@ -86,24 +86,46 @@ function runMideaDiscovery() {
 				return;
 			}
 			console.log(data);
-			console.log(data.result.new);
+			//console.log(data.result.new);
 			if(data.result.new == 0){
 				$('#div_results').empty().append("<center><span style='color:#767676;font-size:1.2em;font-weight: bold;'>{{Aucun nouvel appareil détecté}}</span></center>");
 				return;
 			} else {
-				$('#div_results').empty().append("<center><span style='color:#767676;font-size:1.2em;font-weight: bold;'> " + data.result.new + "{{ Nouveaux appareils détectés}}</span></center>");
+				var plurilizedNewDevices = (data.result.new == 1) ? "Nouvel appareil détecté" : "Nouveaux appareils détectés";
+				$('#div_results').empty().append("<center><span style='color:#767676;font-size:1.2em;font-weight: bold;'> " + data.result.new + "{{ " + plurilizedNewDevices + "}}</span></center>");
 			}
 
-			var html = '<legend>{{Appareils trouvés}}</legend>';
+			//if ($('div.eqLogicThumbnailContainer').length < 1) {
+				// create div container for results
+			$("#div_results").append('<div class="eqLogicThumbnailContainer" id="newEqDetected" style="position: relative; height: 173px;"></div>');
+			//}
+			//<legend>{{Appareils trouvés}}</legend>
+			var html = '';
+			var currentLeft = 0;
 			for (var i in data.result.devices) {
-				html += '<span class="label label-info cursor" style="font-size:1.2em;">';
-				html += '<a href="index.php?v=d&m=mideawifi&p=mideawifi&id='+data.result.devices[i].eqlogic+'">';
-              	var supportedMsg = (data.result.devices[i].supported == "unsupported") ? "Climatiseur détecté mais à priori non supporté!" : "";
-				html += data.result.devices[i].ip + ' (id=' + data.result.devices[i].id + ') ' + supportedMsg ;
-				html += '</a></span>';
-				html += '<br /><br />';
+
+				supported = true;
+				redColor = '';
+				if(data.result.devices[i].supported == "unsupported") {
+					$('#div_alert').showAlert({message: "Climatiseur " + data.result.devices[i].id + " détecté mais à priori non supporté!", level: 'danger'});
+					supported = false;
+				}
+
+				html += '<div class="eqLogicDisplayCard cursor " data-eqlogic_id="' + data.result.devices[i].eqlogic + '" style="position: absolute; left: ' + currentLeft + 'px; top: 0px;"">';
+				html += '<a href="index.php?v=d&m=mideawifi&p=mideawifi&id=' + data.result.devices[i].eqlogic + '">';
+				html += '<img src="plugins/mideawifi/plugin_info/mideawifi_icon.png"><br>';
+				html += '<span class="name">';
+				html += '<span class="label labelObjectHuman" style="text-shadow : none;">Aucun</span><br>';
+				if(!supported)
+					redColor = 'style="color: red"';
+				html += '<strong ' + redColor + '>' + data.result.devices[i].id + '</strong>';
+				html += '</span>';
+				html += '</a>';
+				html += '</div>';
+				currentLeft += 130;
 			}
-			$('#div_results').append(html);
+
+			$('#newEqDetected').append(html);
 		},
 		done: function(data) {
 			console.log('=== Midea Discovery finished ===');
