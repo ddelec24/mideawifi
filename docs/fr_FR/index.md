@@ -46,6 +46,8 @@ En plus des réglages habituels de tous les équipements, vous pourrez modifier 
     => Comme indiqué sur la page des équipements, il est **vivement conseillé** de fixer les adresses IP de vos appareils. Si vous relancez un scan, l'IP se mettre à jour d'elle même sur les équipements existants.  
     => Toujours vérifier avec une application smartphone si ça fonctionne, c'est très souvent la clim qui ne répond tout simplement plus et il faut la redémarrer.  
 
+- Lors du scan, j'ai une ou plusieurs clims avec un message m'indiquant qu'elle n'est peut-être pas supportée
+	=> Le script tiers renvoi une information quand il n'arrive pas à décrypter/analyser correctement toutes les informations venant de l'appareil en question, vous pouvez tester, ça peut quand même fonctionner mais sans garanties.
 
 
 # Scripts Tiers
