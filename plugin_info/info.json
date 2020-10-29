@@ -1,16 +1,16 @@
 {
 	"id" : "mideawifi",
 	"name" : "Midea Wifi",
-	"description" : "Permet de lister et contrôler vos clims Midea via wifi",
+	"description" : "Permet de lister et contrôler vos clims Midea ayant un module WiFi",
 	"licence" : "AGPL",
-	"author" : "Jayknight & Aiglenoir",
+	"author" : "Jayknight & DDelec24",
 	"require" : "4.0",
 	"category" : "wellness",
 	"hasDependency" : true,
 	"hasOwnDeamon" : false,
 	"maxDependancyInstallTime" : 0,
-	"changelog" : "https://jeedom.github.io/plugin-mideawifi/#language#/changelog",
-	"documentation" : "https://jeedom.github.io/plugin-mideawifi/#language#/",
+	"changelog" : "https://https://ddelec24.github.io/mideawifi/#language#/changelog",
+	"documentation" : "https://https://ddelec24.github.io/mideawifi/#language#/",
 	"link" : {
 		"forum":"Lien vers le forum",
 		"video" : "Lien vers une video"
