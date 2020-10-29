@@ -9,8 +9,8 @@
 	"hasDependency" : true,
 	"hasOwnDeamon" : false,
 	"maxDependancyInstallTime" : 0,
-	"changelog" : "https://https://ddelec24.github.io/mideawifi/#language#/changelog",
-	"documentation" : "https://https://ddelec24.github.io/mideawifi/#language#/",
+	"changelog" : "https://ddelec24.github.io/mideawifi/#language#/changelog",
+	"documentation" : "https://ddelec24.github.io/mideawifi/#language#/",
 	"link" : {
 		"forum":"Lien vers le forum",
 		"video" : "Lien vers une video"
