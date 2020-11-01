@@ -1,15 +1,11 @@
-<style type="text/css">
-	button.plus, button.moins {
-		margin: 10px 5px;
-	}
-</style>
-
 <div class="cmd cmd-widget #history#" data-type="action" data-subtype="other" data-template="line" data-cmd_id="#id#" data-cmd_uid="#uid#" data-version="#version#" data-eqLogic_id="#eqLogic_id#">
 	<div><span class="cmdName #hide_name#">#name_display# </span> </div>
-	<div class="content-xs">
+	<div class="btn-group btn-group-justified">
 		<button type="button" class="moins btn">-</button> 
 		<strong class="state">17</strong> #unite# 
-		<button type="button" class="plus btn">+</button> 
+		<button type="button" class="plus btn">+</button>
+  	</div>
+  	<div>
 		<button type="submit" class="execute btn btn-primary">OK</button>
 	</div>
 	<script>
@@ -50,3 +46,9 @@
 		});
 	</script>
 </div>
+
+<style type="text/css">
+	button.plus, button.moins {
+		margin: 5px auto;
+	}
+</style>

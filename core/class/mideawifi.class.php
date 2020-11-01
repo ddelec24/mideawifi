@@ -407,6 +407,7 @@ class mideawifi extends eqLogic {
 		$cmd->setUnite('°C');
 		$cmd->setValue($infoTemp->getId());
 		$cmd->setTemplate('dashboard', 'mideawifi::setTemperature');
+      	$cmd->setTemplate('mobile', 'mideawifi::setTemperature');
 		$cmd->setDisplay('forceReturnLineBefore', true);
 		$cmd->save();
 
