@@ -35,14 +35,14 @@
 
 		$('button.plus').on('click', function() {
 			var newValue = ($('.cmd[data-cmd_id=#id#] .state').text() != "") ? (parseInt($('.cmd[data-cmd_id=#id#] .state').text(), 10) + 1) : 17;
-			$('.cmd[data-cmd_id=#id#] .state').text(newValue);
-			//alert($('.cmd[data-cmd_id=#id#] .state').text());
+          	if(newValue > 16 && newValue < 31)
+				$('.cmd[data-cmd_id=#id#] .state').text(newValue);
 		});
 
 		$('button.moins').on('click', function() {
 			var newValue = ($('.cmd[data-cmd_id=#id#] .state').text() != "") ? (parseInt($('.cmd[data-cmd_id=#id#] .state').text(), 10) - 1) : 17;
-			$('.cmd[data-cmd_id=#id#] .state').text(newValue);
-			//alert($('.cmd[data-cmd_id=#id#] .state').text());
+          	if(newValue > 16 && newValue < 31)
+				$('.cmd[data-cmd_id=#id#] .state').text(newValue);
 		});
 	</script>
 </div>
