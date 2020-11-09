@@ -4,7 +4,7 @@
 	"description" : "Permet de lister et contrôler vos clims Midea ayant un module WiFi",
 	"licence" : "AGPL",
 	"author" : "Jayknight & DDelec24",
-	"require" : "4.0",
+	"require" : "3.3",
 	"category" : "wellness",
 	"hasDependency" : true,
 	"hasOwnDeamon" : false,
