@@ -13,6 +13,7 @@ Voici une liste non exhaustive de marques ayant parfois des contrôleurs électr
 - Altech  
 - Carrier  
 - Johnson  
+- Qlima
 - Riello  
 
 ## Aperçu  

@@ -11,10 +11,10 @@
 	"maxDependancyInstallTime" : 0,
 	"changelog" : "https://ddelec24.github.io/mideawifi/#language#/changelog",
 	"documentation" : "https://ddelec24.github.io/mideawifi/#language#/",
-	"link" : {
-		"forum":"Lien vers le forum",
-		"video" : "Lien vers une video"
-	},
+	//"link" : {
+	//	"forum":"Lien vers le forum",
+	//	"video" : "Lien vers une video"
+	//},
 	"language" : ["fr_FR","en_US","de_DE","sp_SP","ru_RU","id_ID","it_IT"],
 	"compatibility" : ["miniplus","smart","rpi","docker","diy","mobile", "v4"]
 }
