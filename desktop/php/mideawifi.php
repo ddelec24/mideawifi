@@ -16,6 +16,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
 				<br>
 				<span>{{Lancer un scan}}</span>
 			</div>
+			<div class="cursor eqLogicAction logoSecondary" data-action="add">
+				<i class="fas fa-plus-square"></i>
+				<br>
+				<span>{{Ajout manuel}}</span>
+			</div>
 			<div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
 				<i class="fas fa-wrench"></i>
 				<br>
@@ -102,13 +107,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
 						<div class="form-group">
 							<label class="col-sm-3 control-label">{{Adresse IP}} *</label>
 							<div class="col-sm-3">
-								<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="ip" readonly/>
+								<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="ip" />
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-3 control-label">{{ID unique}}</label>
 							<div class="col-sm-3">
-								<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="id" readonly/>
+								<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="id" />
 							</div>
 						</div>
 						<div class="form-group">
