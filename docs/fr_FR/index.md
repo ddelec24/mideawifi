@@ -35,10 +35,10 @@ Vous pouvez visualiser le ou les équipements trouvés et cliquer pour rentrer d
 # Configuration d'un équipement
 
 ![CONFIGURATION EQUIPEMENT](../img/conf_equipement.png)  
-En plus des réglages habituels de tous les équipements, vous pourrez modifier le port si ce n'est pas celui par défaut et aussi bloquer le type de ventilation pour n'avoir que les choix compatibles avec votre matériel sur l'affichage dashboard. L'ID et l'IP ne sont pas modifiables.
+En plus des réglages habituels de tous les équipements, vous pourrez modifier le port si ce n'est pas celui par défaut et aussi bloquer le type de ventilation pour n'avoir que les choix compatibles avec votre matériel sur l'affichage dashboard.
 
 # FAQ
-- Je ne trouve aucune clim
+- Je ne trouve aucune clim  
     => Merci de vérifier avec une appli smartphone (*Midea Air* ou *NetHome Plus* par exemple) si ça fonctionne ou non.  
     => L'association au réseau wifi doit être effectuée au préalable.  
     => Le module du climatiseur est peut être planté, il faut redémarrer la clim et la contrôler avec la télécommande pour qu'elle s'initialise correctement.  
@@ -47,7 +47,7 @@ En plus des réglages habituels de tous les équipements, vous pourrez modifier 
     => Comme indiqué sur la page des équipements, il est **vivement conseillé** de fixer les adresses IP de vos appareils. Si vous relancez un scan, l'IP se mettre à jour d'elle même sur les équipements existants.  
     => Toujours vérifier avec une application smartphone si ça fonctionne, c'est très souvent la clim qui ne répond tout simplement plus et il faut la redémarrer.  
 
-- Lors du scan, j'ai une ou plusieurs clims avec un message m'indiquant qu'elle n'est peut-être pas supportée
+- Lors du scan, j'ai une ou plusieurs clims avec un message m'indiquant qu'elle n'est peut-être pas supportée  
 	=> Le script tiers renvoi une information quand il n'arrive pas à décrypter/analyser correctement toutes les informations venant de l'appareil en question, vous pouvez tester, ça peut quand même fonctionner mais sans garanties.
 
 

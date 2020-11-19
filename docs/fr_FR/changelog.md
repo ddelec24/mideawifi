@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.2 - 2020-11-19
++ Correction du sous-type de l'action pour l'action du changement de température. Le changement de consigne en saisissant une valeur est désormais possible dans un scénario.
+
 ## 1.0.1 - 2020-11-13  
 + Possibilité d'ajouter manuellement un appareil à partir de l'adresse IP, de l'ID et du port
 
