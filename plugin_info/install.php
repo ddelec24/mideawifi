@@ -42,6 +42,14 @@ function mideawifi_update() {
 		$cron->setSchedule('* /10 * * * *');
 		$cron->save();
 	}*/
+  	// ré-enregistrement des équipements
+	foreach (mideawifi::byType('mideawifi', true) as $mideawifi) {
+		try {
+			$mideawifi->save();
+		} catch (Exception $e) {
+
+		}
+	}
 }
 
 
