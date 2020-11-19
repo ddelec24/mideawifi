@@ -59,7 +59,9 @@
       // exemple clim avec msmart 0.1.23
       /*$raw = "INFO:msmart.cli: Found a supported device - type: '0xac' - version: V2 - ip: 192.168.1.44 - port: 6444 - id: 32132165465478 - sn: 000000P0000000111111111111110000 - ssid: net_ac_0000
       INFO:msmart.cli: Found an unsupported device - type: '0xac' - version: V2 - ip: 192.168.1.45 - port: 6444 - id: 32132165465477 - sn: 000000P0000000111111111111110000 - ssid: net_ac_0000
-      INFO:msmart.cli: Found a supported device - type: '0xac' - version: V2 - ip: 192.168.1.46 - port: 6444 - id: 32132165465474 - sn: 000000P0000000111111111111110000 - ssid: net_ac_0000";*/
+      INFO:msmart.cli: Found a supported device - type: '0xac' - version: V2 - ip: 192.168.1.46 - port: 6444 - id: 32132165465474 - sn: 000000P0000000111111111111110000 - ssid: net_ac_0000
+      INFO:msmart.cli:*** Found a supported device - type: '0xac' - version: V2 - ip: 192.168.1.47 - port: 6444 - id: 2000000067811 - sn: 000000P0000000Q1F000000000000000 - ssid: net_ac_0000";*/
+
       
       
 

@@ -28,7 +28,7 @@ class mideawifi extends eqLogic {
 	public static $_widgetPossibility = array('custom' => true);
 
 	public static function templateWidget(){
-		$return['action']['other']['temperature_consigne'] = array(
+		$return['action']['slider']['temperature_consigne'] = array(
 			'template' => 'setTemperature'
 		);
 		$return['action']['select']['setMode'] = array(
@@ -401,7 +401,7 @@ class mideawifi extends eqLogic {
 		$cmd->setLogicalId('setTemperature');
 		$cmd->setEqLogic_id($this->getId());
 		$cmd->setType('action');
-		$cmd->setSubType('other');
+		$cmd->setSubType('slider');
 		$cmd->setConfiguration('minValue', 16);
 		$cmd->setConfiguration('maxValue', 30);
 		$cmd->setUnite('°C');
