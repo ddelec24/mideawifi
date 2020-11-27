@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.3 - 2020-11-27
++ Fix du problème de design de l'action consigne pour les jeedom v3
+
 ## 1.0.2 - 2020-11-19
 + Correction du sous-type de l'action pour l'action du changement de température. Le changement de consigne en saisissant une valeur est désormais possible dans un scénario.
 
