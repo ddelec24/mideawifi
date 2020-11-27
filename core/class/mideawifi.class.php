@@ -406,13 +406,13 @@ class mideawifi extends eqLogic {
 		$cmd->setConfiguration('maxValue', 30);
 		$cmd->setUnite('°C');
 		$cmd->setValue($infoTemp->getId());
-      	if(version_compare(jeedom::version(), "4", "<")) {
+      		if(version_compare(jeedom::version(), "4", "<")) {
 			$cmd->setTemplate('dashboard', 'setTemperature');
-          	$cmd->setTemplate('mobile', 'setTemperature');
-        } else {
+          		$cmd->setTemplate('mobile', 'setTemperature');
+        	} else {
 			$cmd->setTemplate('dashboard', 'mideawifi::setTemperature');
-          	$cmd->setTemplate('mobile', 'mideawifi::setTemperature');
-        }
+	          	$cmd->setTemplate('mobile', 'mideawifi::setTemperature');
+        	}
 		$cmd->setDisplay('forceReturnLineBefore', true);
 		$cmd->save();
 
