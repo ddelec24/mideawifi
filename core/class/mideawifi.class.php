@@ -812,7 +812,8 @@ class mideawifiCmd extends cmd {
 				$eqLogic->setNormalmode();
 				break;
 			case 'setTemperature':
-				$eqLogic->setTemperature($_options['text']);
+            			$temp = isset($_options['text']) ? $_options['text'] : $_options['slider'];
+				$eqLogic->setTemperature($temp);
 				break;
 			case 'setMode':
 				$eqLogic->setMode($_options['select']);
