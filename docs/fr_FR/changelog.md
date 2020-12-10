@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.4 - 2020-12-10
++ Fix problème d'affectation d'une consigne de température via un scénario
+
 ## 1.0.3 - 2020-11-27
 + Fix du problème de design de l'action consigne pour les jeedom v3
 
