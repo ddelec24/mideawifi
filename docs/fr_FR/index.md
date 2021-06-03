@@ -16,6 +16,10 @@ Voici une liste non exhaustive de marques ayant parfois des contrôleurs électr
 - Qlima
 - Riello  
 
+Contrôleur wifi:  
+J'attire votre attention sur le fait que ce plugin ne fonctionne pas avec les modules wifi **"OSK-103"**, ce dernier étant obligatoirement par le cloud. Vous trouvez cette information sur l'étiquette du contrôleur wifi.  
+Si vous êtes dans ce cas, il existe plusieurs solutions. La première est de trouver la version précédente **"OSK-102"** mais pas toujours évident. Pour les autres solutions, il faut souvent des connaissances poussées de votre part ou des réglages que je ne peux intégrer et gérer depuis ce plugin. Je vous invite à aller voir sur le [TELEGRAM](https://t.me/c/1347719786/4834) de l'auteur du script de communication midea. Ça n'évolue pas très vite, mais Midea prend de l'ampleur, on espère des changements dans le bon sens dans le futur!
+
 ## Aperçu  
 
 ![DASHBOARD VIEW](../img/equipement-dashboard.png)

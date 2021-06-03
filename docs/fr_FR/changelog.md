@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2021-06-03
++ Ajout d'informations dans la documentation + annulation branche beta
+
 ## 1.0.4 - 2020-12-10
 + Fix problème d'affectation d'une consigne de température via un scénario
 
