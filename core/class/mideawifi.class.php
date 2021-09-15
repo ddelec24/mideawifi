@@ -19,7 +19,6 @@
 /* * ***************************Includes********************************* */
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
-//include_file('3rdparty', 'msmart', 'php', 'mideawifi');
 
 class mideawifi extends eqLogic {
 
@@ -31,7 +30,13 @@ class mideawifi extends eqLogic {
 		$return['action']['slider']['temperature_consigne'] = array(
 			'template' => 'setTemperature'
 		);
+		$return['action']['slider']['setHumidityDehumidifierCloud'] = array(
+			'template' => 'setHumidityDehumidifierCloud'
+		);
 		$return['action']['select']['setMode'] = array(
+			'template' => 'tmplSelect'
+		);
+		$return['action']['select']['setFanSpeedDehumidifierCloud'] = array(
 			'template' => 'tmplSelect'
 		);
 		$return['action']['select']['setSwingmode'] = array(
@@ -93,20 +98,30 @@ class mideawifi extends eqLogic {
 		$return['progress_file'] = self::$_depProgressFile;
 		$return['state'] = 'ok';
 
-		// PYTHON
-			$python = shell_exec('python3 --version 2>&1');
-			log::add('mideawifi', 'debug', 'version python3: ' . $python);
-			$arrPython = explode(" ", $python);
+		// PYTHON3
+		$python = shell_exec('python3 --version 2>&1');
+		log::add('mideawifi', 'debug', 'version python3: ' . $python);
+		$arrPython = explode(" ", $python);
 
 		if( $arrPython[0] == "Python") { // python installé ok
 			$versionPython = explode(".", $arrPython[1]);
-		if($versionPython[1] < 5 || $versionPython[1] > 7) { // compatible de python 3.5 à 3.7
-			$return['state'] = 'nok';
-			log::add('mideawifi', 'debug', 'probleme de version mineure: ' . $python);
-		}
+			if($versionPython[1] < 5 || $versionPython[1] > 7) { // compatible de python 3.5 à 3.7
+				$return['state'] = 'nok';
+				log::add('mideawifi', 'debug', 'probleme de version mineure: ' . $python);
+			}
 		} else {
 			$return['state'] = 'nok';
 			log::add('mideawifi', 'debug', 'probleme avec python3');
+		}
+
+		// PYTHON
+		$python = shell_exec('python --version 2>&1');
+		log::add('mideawifi', 'debug', 'version python2: ' . $python);
+		$arrPython = explode(" ", $python);
+
+		if( $arrPython[0] != "Python") { // python installé ok
+			$return['state'] = 'nok';
+			log::add('mideawifi', 'debug', 'probleme avec python2');
 		}
 
 		// PIP3
@@ -115,11 +130,25 @@ class mideawifi extends eqLogic {
 			$return['state'] = 'nok';
 			log::add('mideawifi', 'debug', 'probleme avec pip3');
 		} else {
-		// msmart
+			// msmart
 			$msmart = shell_exec('pip3 show msmart 2>&1');
 			if(!$msmart) {
 				$return['state'] = 'nok';
 				log::add('mideawifi', 'debug', 'probleme avec module pip3 msmart');
+			}
+		}
+
+		// PIP
+		$pip3 = shell_exec('pip --version 2>&1');
+		if(substr($pip3, 0, 3) != "pip") {
+			$return['state'] = 'nok';
+			log::add('mideawifi', 'debug', 'probleme avec pip');
+		} else {
+			// midea_inventor_lib
+			$midea_inventor_lib = shell_exec('pip show midea_inventor_lib 2>&1');
+			if(!$midea_inventor_lib) {
+				$return['state'] = 'nok';
+				log::add('mideawifi', 'debug', 'probleme avec module pip midea_inventor_lib');
 			}
 		}
 
@@ -128,17 +157,17 @@ class mideawifi extends eqLogic {
 
 	/*     * *********************Méthodes d'instance************************* */
 
-  	public static function cron10() {
-    	
+	public static function cron10() {
+
 		foreach (self::byType('mideawifi') as $eqLogicMideawifi) {
-          	//log::add('mideawifi', 'debug', 'valeur enable' . $eqLogicMideawifi->getIsEnable());
-          	if($eqLogicMideawifi->getIsEnable() == 1)
+				//log::add('mideawifi', 'debug', 'valeur enable' . $eqLogicMideawifi->getIsEnable());
+			if($eqLogicMideawifi->getIsEnable() == 1)
 				$eqLogicMideawifi->updateInfos();
 
-			log::add('mideawifi', 'debug', 'update clim ' . $eqLogicMideawifi->getName());
+			log::add('mideawifi', 'debug', 'update Equipement ' . $eqLogicMideawifi->getName());
 		}
-    }
-  
+	}
+
 	public function preInsert() {
 
 	}
@@ -153,8 +182,23 @@ class mideawifi extends eqLogic {
 
 	public function postSave() {
 
-		$order = 1;
+		$_type = $this->getConfiguration('hexadecimalType', '0xac');
+		//$_version = $this->getConfiguration('version', 'v2');
 
+		if($_type == '0xac') // clim
+		self::_postSaveAC();
+
+		if($_type == '0xa1') // Déshumidificateur
+		self::_postSaveDehumidifier();
+
+		// à la fin, on contact directement léquipement pour récupérer les infos courantes
+		$this->updateInfos();
+
+	} // fin postSave()
+
+	// @DEVHELP https://github.com/jeedom/core/blob/06fb34c895b420630bfa9d9317547088b13f81d7/core/config/jeedom.config.php
+	private function _postSaveAC() {
+		$order = 1;
 		// ================================================================================================================= //
 		// ===================================================== INFOS ===================================================== //
 		// ================================================================================================================= //
@@ -169,7 +213,6 @@ class mideawifi extends eqLogic {
 		$infoState->setLogicalId('power_state');
 		$infoState->setEqLogic_id($this->getId());
 		$infoState->setType('info');
-
 		$infoState->setSubType('binary');
 		$infoState->setIsVisible(1);
 		$infoState->setIsHistorized(1);
@@ -211,7 +254,6 @@ class mideawifi extends eqLogic {
 		$infoTemp->setDisplay('forceReturnLineBefore', false);
 		$infoTemp->save();
 
-
 		// vitesse ventilateur
 		$infoSpeedfan = $this->getCmd(null, 'fan_speed');
 		if (!is_object($infoSpeedfan)) {
@@ -224,7 +266,7 @@ class mideawifi extends eqLogic {
 		$infoSpeedfan->setType('info');
 		$infoSpeedfan->setSubType('string');
 		$infoSpeedfan->setIsVisible(0);
-      	$infoSpeedfan->setDisplay('forceReturnLineBefore', false);
+		$infoSpeedfan->setDisplay('forceReturnLineBefore', false);
 		$infoSpeedfan->save();
 
 		// Mode de ventilation
@@ -239,7 +281,7 @@ class mideawifi extends eqLogic {
 		$infoSwingmode->setType('info');
 		$infoSwingmode->setSubType('string');
 		$infoSwingmode->setIsVisible(0);
-      	$infoSwingmode->setDisplay('forceReturnLineBefore', false);
+		$infoSwingmode->setDisplay('forceReturnLineBefore', false);
 		$infoSwingmode->save();
 
 		// Mode éco
@@ -286,11 +328,6 @@ class mideawifi extends eqLogic {
 		$infoMode->setLogicalId('operational_mode');
 		$infoMode->setEqLogic_id($this->getId());
 		$infoMode->setType('info');
-		/*if ( version_compare(jeedom::version(), "4", "<") ) {
-		$infoMode->setTemplate('dashboard', 'displayModeInfo'); //template pour le dashboard en v3
-		} else {
-		$infoMode->setTemplate('dashboard', 'mideawifi::displayModeInfo'); //template pour le dashboard
-		}*/
 		$infoMode->setSubType('string');
 		$infoMode->setIsVisible(0);
 		//$infoMode->setDisplay('generic_type', 'MODE_STATE');
@@ -337,30 +374,10 @@ class mideawifi extends eqLogic {
 		// ================================================================================================================= //
 		// ==================================================== ACTIONS ==================================================== //
 		// ================================================================================================================= //
-
-		// @DEVHELP https://github.com/jeedom/core/blob/06fb34c895b420630bfa9d9317547088b13f81d7/core/config/jeedom.config.php
-
-		// Allumage/Extinction clim
-		/*$cmd = $this->getCmd('action', 'setPowerState');
+		$cmd = $this->getCmd('action', 'on');
 		if (!is_object($cmd)) {
 			$cmd = new mideawifiCmd();
-			$cmd->setName(__('Etat', __FILE__));
-		}
-		$cmd->setOrder(1);
-		$cmd->setIsVisible(1);
-		$cmd->setLogicalId('setPowerState');
-		$cmd->setEqLogic_id($this->getId());
-		$cmd->setType('action');
-		$cmd->setSubType('other');
-		$cmd->setValue($infoState->getId());
-		$cmd->setTemplate('dashboard', 'mideawifi::powerState'); //template pour le dashboard
-		$cmd->setDisplay('forceReturnLineBefore', true);
-		$cmd->save();*/
-
-      	$cmd = $this->getCmd('action', 'on');
-		if (!is_object($cmd)) {
-		$cmd = new mideawifiCmd();
-		$cmd->setName(__('Allumer', __FILE__));
+			$cmd->setName(__('Allumer', __FILE__));
 		}
 		$cmd->setOrder($order++);
 		$cmd->setIsVisible(1);
@@ -372,12 +389,12 @@ class mideawifi extends eqLogic {
 		$info->setDisplay('forceReturnLineBefore', true);
 		//$info->setDisplay('forceReturnLineAfter', true);
 		$cmd->save();
-      
+
 		// Extinction clim
 		$cmd = $this->getCmd('action', 'off');
 		if (!is_object($cmd)) {
-		$cmd = new mideawifiCmd();
-		$cmd->setName(__('Eteindre', __FILE__));
+			$cmd = new mideawifiCmd();
+			$cmd->setName(__('Eteindre', __FILE__));
 		}
 		$cmd->setOrder($order++);
 		$cmd->setIsVisible(1);
@@ -406,13 +423,13 @@ class mideawifi extends eqLogic {
 		$cmd->setConfiguration('maxValue', 30);
 		$cmd->setUnite('°C');
 		$cmd->setValue($infoTemp->getId());
-      		if(version_compare(jeedom::version(), "4", "<")) {
+		if(version_compare(jeedom::version(), "4", "<")) {
 			$cmd->setTemplate('dashboard', 'setTemperature');
-          		$cmd->setTemplate('mobile', 'setTemperature');
-        	} else {
+			$cmd->setTemplate('mobile', 'setTemperature');
+		} else {
 			$cmd->setTemplate('dashboard', 'mideawifi::setTemperature');
-	          	$cmd->setTemplate('mobile', 'mideawifi::setTemperature');
-        	}
+			$cmd->setTemplate('mobile', 'mideawifi::setTemperature');
+		}
 		$cmd->setDisplay('forceReturnLineBefore', true);
 		$cmd->save();
 
@@ -569,26 +586,267 @@ class mideawifi extends eqLogic {
 		$refresh->setSubType('other');
 		$refresh->save();
 
-		// à la fin, on contact directement léquipement pour récupérer les infos courantes
-		$this->updateInfos();
-	} // fin postSave()
-
-	public function preUpdate() {
-
 	}
 
-	public function postUpdate() {
+	private function _postSaveDehumidifier() {
+		/*
+			[id=xxxxxxxxx type=0xA1 name=Dehumidifier]
+			DeHumidification [powerMode=0, mode=3, Filter=False, Water tank=False, Current humidity=73, Current humidity (decimal)=0, Wind speed=60
+			Set humidity=60, Set humidity (decimal)=0, ionSetSwitch=0, isDisplay=True, dryClothesSetSwitch=0, Up&Down Swing=0]
+		*/
+
+			$order = 1;
+		// ================================================================================================================= //
+		// ===================================================== INFOS ===================================================== //
+		// ================================================================================================================= //
+		// etat alimentation
+			$infoState = $this->getCmd(null, 'power_mode');
+			if (!is_object($infoState)) {
+				$infoState = new mideawifiCmd();
+				$infoState->setName(__('Etat courant', __FILE__));
+			}
+			$infoState->setOrder($order++);
+			$infoState->setLogicalId('power_mode');
+			$infoState->setEqLogic_id($this->getId());
+			$infoState->setType('info');
+			$infoState->setSubType('binary');
+			$infoState->setIsVisible(1);
+			$infoState->setIsHistorized(1);
+			$infoState->setDisplay('forceReturnLineBefore', false);
+			$infoState->save();
+
+		// mode de fonctionnement (1:TARGET_MODE, 2:CONTINOUS_MODE, 3:SMART_MODE, 4:DRYER_MODE)
+			$infoMode = $this->getCmd(null, 'mode');
+			if (!is_object($infoMode)) {
+				$infoMode = new mideawifiCmd();
+				$infoMode->setName(__('Mode', __FILE__));
+			}
+			$infoMode->setOrder($order++);
+			$infoMode->setLogicalId('mode');
+			$infoMode->setEqLogic_id($this->getId());
+			$infoMode->setType('info');
+			$infoMode->setSubType('string');
+			$infoMode->setIsVisible(0);
+			$infoMode->setIsHistorized(0);
+			$infoMode->setDisplay('forceReturnLineBefore', false);
+			$infoMode->save();
+
+		// alerte filtre à nettoyer/changer
+			$infoFilter = $this->getCmd(null, 'filter');
+			if (!is_object($infoFilter)) {
+				$infoFilter = new mideawifiCmd();
+				$infoFilter->setName(__('Maintenance filtre nécessaire', __FILE__));
+			}
+			$infoFilter->setOrder($order++);
+			$infoFilter->setLogicalId('filter');
+			$infoFilter->setEqLogic_id($this->getId());
+			$infoFilter->setType('info');
+			$infoFilter->setSubType('binary');
+			$infoFilter->setIsVisible(0);
+			$infoFilter->setIsHistorized(0);
+			$infoFilter->setDisplay('forceReturnLineBefore', false);
+			$infoFilter->save();
+
+		// alerte récupérateur d'eau
+			$infoWaterTank = $this->getCmd(null, 'water_tank');
+			if (!is_object($infoWaterTank)) {
+				$infoWaterTank = new mideawifiCmd();
+				$infoWaterTank->setName(__('Récupérateur d\'eau plein', __FILE__));
+			}
+			$infoWaterTank->setOrder($order++);
+			$infoWaterTank->setLogicalId('water_tank');
+			$infoWaterTank->setEqLogic_id($this->getId());
+			$infoWaterTank->setType('info');
+			$infoWaterTank->setSubType('binary');
+			$infoWaterTank->setIsVisible(0);
+			$infoWaterTank->setIsHistorized(0);
+			$infoWaterTank->setDisplay('forceReturnLineBefore', false);
+			$infoWaterTank->save();
+
+		// humidité actuelle
+			$infoHumidity = $this->getCmd(null, 'humidity');
+			if (!is_object($infoHumidity)) {
+				$infoHumidity = new mideawifiCmd();
+				$infoHumidity->setName(__('Humidité actuelle', __FILE__));
+			}
+			$infoHumidity->setOrder($order++);
+			$infoHumidity->setLogicalId('humidity');
+			$infoHumidity->setEqLogic_id($this->getId());
+			$infoHumidity->setType('info');
+			$infoHumidity->setSubType('string');
+			$infoHumidity->setUnite('%');
+			$infoHumidity->setIsVisible(1);
+			$infoHumidity->setIsHistorized(1);
+			$infoHumidity->setDisplay('forceReturnLineBefore', false);
+			$infoHumidity->save();
+
+		// humidité désirée
+			$infoTargetHumidity = $this->getCmd(null, 'targetHumidity');
+			if (!is_object($infoTargetHumidity)) {
+				$infoTargetHumidity = new mideawifiCmd();
+				$infoTargetHumidity->setName(__('Humidité désirée', __FILE__));
+			}
+			$infoTargetHumidity->setOrder($order++);
+			$infoTargetHumidity->setLogicalId('targetHumidity');
+			$infoTargetHumidity->setEqLogic_id($this->getId());
+			$infoTargetHumidity->setType('info');
+			$infoTargetHumidity->setSubType('string');
+			$infoTargetHumidity->setUnite('%');
+			$infoTargetHumidity->setIsVisible(0);
+			$infoTargetHumidity->setIsHistorized(0);
+			$infoTargetHumidity->setDisplay('forceReturnLineBefore', false);
+			$infoTargetHumidity->save();
+
+		// vitesse du vent
+			$infoWindSpeed = $this->getCmd(null, 'wind_speed');
+			if (!is_object($infoWindSpeed)) {
+				$infoWindSpeed = new mideawifiCmd();
+				$infoWindSpeed->setName(__('Vitesse du vent', __FILE__));
+			}
+			$infoWindSpeed->setOrder($order++);
+			$infoWindSpeed->setLogicalId('wind_speed');
+			$infoWindSpeed->setEqLogic_id($this->getId());
+			$infoWindSpeed->setType('info');
+			$infoWindSpeed->setSubType('string');
+			//$infoWindSpeed->setUnite('%');
+			$infoWindSpeed->setIsVisible(0);
+			$infoWindSpeed->setIsHistorized(0);
+			$infoWindSpeed->setDisplay('forceReturnLineBefore', false);
+			$infoWindSpeed->save();
+
+		// autres: Set humidity=60, Set 
+# humidity (decimal)=0, ionSetSwitch=0, isDisplay=True, dryClothesSetSwitch=0, Up&Down Swing=0]
+
+
+		// ================================================================================================================= //
+		// ==================================================== ACTIONS ==================================================== //
+		// ================================================================================================================= //
+
+			$cmd = $this->getCmd('action', 'onDehumidifierCloud');
+			if (!is_object($cmd)) {
+				$cmd = new mideawifiCmd();
+				$cmd->setName(__('Allumer', __FILE__));
+			}
+			$cmd->setOrder($order++);
+			$cmd->setIsVisible(1);
+			$cmd->setLogicalId('onDehumidifierCloud');
+			$cmd->setEqLogic_id($this->getId());
+			$cmd->setType('action');
+			$cmd->setSubType('other');
+			$cmd->setDisplay('generic_type', 'ENERGY_ON');
+			$cmd->setDisplay('forceReturnLineBefore', true);
+		//$info->setDisplay('forceReturnLineAfter', true);
+			$cmd->save();
+
+		// Extinction clim
+			$cmd = $this->getCmd('action', 'offDehumidifierCloud');
+			if (!is_object($cmd)) {
+				$cmd = new mideawifiCmd();
+				$cmd->setName(__('Eteindre', __FILE__));
+			}
+			$cmd->setOrder($order++);
+			$cmd->setIsVisible(1);
+			$cmd->setLogicalId('offDehumidifierCloud');
+			$cmd->setEqLogic_id($this->getId());
+			$cmd->setType('action');
+			$cmd->setSubType('other');
+			$cmd->setDisplay('generic_type', 'ENERGY_OFF');
+		//$cmd->setDisplay('forceReturnLineBefore', true);
+			$cmd->setDisplay('forceReturnLineAfter', true);
+			$cmd->save();
+
+		// Changement du mode
+			$cmd = $this->getCmd('action', 'setModeDehumidifierCloud');
+			if (!is_object($cmd)) {
+				$cmd = new mideawifiCmd();
+				$cmd->setName(__('Choix du Mode', __FILE__));
+			}           
+			$cmd->setOrder($order++);
+			$cmd->setIsVisible(1);
+			$cmd->setLogicalId('setModeDehumidifierCloud');
+			$cmd->setEqLogic_id($this->getId());
+			$cmd->setType('action');
+			$cmd->setSubType('select');
+			$cmd->setValue($infoMode->getId());
+			$cmd->setConfiguration('listValue', "2|continu;3|intelligent;4|déshumidificateur"); //1|ciblé;
+			$cmd->setTemplate('dashboard', 'mideawifi::tmplSelect');
+			$cmd->setDisplay('forceReturnLineBefore', true);
+			$cmd->save();
+
+			// Changement humidité
+			$cmd = $this->getCmd('action', 'setHumidityDehumidifierCloud');
+			if (!is_object($cmd)) {
+				$cmd = new mideawifiCmd();
+				$cmd->setName(__('Humidité demandée', __FILE__));
+			}
+			$cmd->setOrder($order++);
+			$cmd->setIsVisible(1);
+			$cmd->setLogicalId('setHumidityDehumidifierCloud');
+			$cmd->setEqLogic_id($this->getId());
+			$cmd->setType('action');
+			$cmd->setSubType('slider');
+			$cmd->setConfiguration('minValue', 30);
+			$cmd->setConfiguration('maxValue', 70);
+			$cmd->setUnite('%');
+			$cmd->setValue($infoTargetHumidity->getId());
+			if(version_compare(jeedom::version(), "4", "<")) {
+				$cmd->setTemplate('dashboard', 'setHumidityDehumidifierCloud');
+				$cmd->setTemplate('mobile', 'setHumidityDehumidifierCloud');
+			} else {
+				$cmd->setTemplate('dashboard', 'mideawifi::setHumidityDehumidifierCloud');
+				$cmd->setTemplate('mobile', 'mideawifi::setHumidityDehumidifierCloud');
+			}
+			$cmd->setDisplay('forceReturnLineBefore', true);
+			$cmd->save();
+
+		// Vitesse ventilateur
+			$cmd = $this->getCmd('action', 'setFanSpeedDehumidifierCloud');
+			if (!is_object($cmd)) {
+				$cmd = new mideawifiCmd();
+				$cmd->setName(__('Vitesse de ventilation', __FILE__));
+			}
+			$cmd->setOrder($order++);
+			$cmd->setIsVisible(1);
+			$cmd->setLogicalId('setFanSpeedDehumidifierCloud');
+			$cmd->setEqLogic_id($this->getId());
+			$cmd->setType('action');
+			$cmd->setSubType('select');
+			$cmd->setValue($infoWindSpeed->getId());
+			$cmd->setConfiguration('listValue', "80|Rapide;60|Moyenne;40|Silencieuse");
+			$cmd->setTemplate('dashboard', 'mideawifi::tmplSelect');
+			$cmd->setDisplay('forceReturnLineBefore', true);
+			$cmd->save();
+
+		// rafraichir
+			$refresh = $this->getCmd(null, 'refresh');
+			if (!is_object($refresh)) {
+				$refresh = new mideawifiCmd();
+				$refresh->setName(__('Rafraichir', __FILE__));
+			}
+			$refresh->setEqLogic_id($this->getId());
+			$refresh->setLogicalId('refresh');
+			$refresh->setType('action');
+			$refresh->setSubType('other');
+			$refresh->save();
+
+		}
+
+		public function preUpdate() {
+
+		}
+
+		public function postUpdate() {
 		// clear le cache widget
-		$this->refreshWidget();
-	}
+			$this->refreshWidget();
+		}
 
-	public function preRemove() {
+		public function preRemove() {
 
-	}
+		}
 
-	public function postRemove() {
+		public function postRemove() {
 
-	}
+		}
 
 	/*
 	* Non obligatoire mais permet de modifier l'affichage du widget si vous en avez besoin
@@ -600,10 +858,11 @@ class mideawifi extends eqLogic {
 	
 	//* Non obligatoire mais ca permet de déclencher une action après modification de variable de configuration
 	// Mets à jour le timeout dans le cli.py
-	public static function postConfig_timeout() {
+	/*public static function postConfig_timeout() {
 		// @TODO
 		log::add('mideawifi', 'debug', 'timeout modifié');
-	}
+	}*/
+
 	
 
 	/*
@@ -612,21 +871,26 @@ class mideawifi extends eqLogic {
 	}
 	*/
 
+	// Hash le mot de passe du cloud midea
+	public static function preConfig_passCloud($value) {
+		return (!empty($value)) ? hash('sha256', $value) : "";
+	}
+
 	/*     * **********************Getteur Setteur*************************** */
-	public function getInfos() {
+	public function getInfosAC() {
 		// 2 trames dexemple
 		//$get = "{'name': '192.168.102.79', 'fan_speed': <fan_speed_enum.Low: 40>, 'turbo_mode': False, 'prompt_tone': False, 'outdoor_temperature': 33.0, 'power_state': True, 'id': '140f00000014', 'target_temperature': 28.0, 'operational_mode': <operational_mode_enum.cool: 2>, 'swing_mode': <swing_mode_enum.Off: 0>, 'indoor_temperature': 28.0, 'eco_mode': False}";
 		//$get = "{'name': '192.168.102.80', 'fan_speed': <fan_speed_enum.High: 80>, 'turbo_mode': True, 'prompt_tone': False, 'outdoor_temperature': 38.0, 'power_state': True, 'id': '140f00000015', 'target_temperature': 24.0, 'operational_mode': <operational_mode_enum.auto: 1>, 'swing_mode': <swing_mode_enum.Off: 0>, 'indoor_temperature': 26.0, 'eco_mode': False}";
 		$ip = $this->getConfiguration('ip');
 		$id = $this->getConfiguration('id');
-      	$port = $this->getConfiguration('port');
-		$get = shell_exec("python3 " . __DIR__ . "/../../resources/get.py $ip $id $port 2>&1");
+		$port = $this->getConfiguration('port');
+		$get = shell_exec("python3 " . __DIR__ . "/../../resources/getAC.py $ip $id $port 2>&1");
 
 		$formattedGet = strtolower(preg_replace("/<(?:.*)([0-9]+)>/mU", "$1", $get, -1)); // fix json format
 		//$formattedGet = preg_replace("/: ,/", ": false,", $formattedGet, -1); // fix json empty value for swingmode
 		$formattedGet = preg_replace("/'/", "\"", $formattedGet, -1); // simple to double quotes
 
-		log::add('mideawifi', 'debug', 'Get Infos = ' . $formattedGet);
+		log::add('mideawifi', 'debug', 'Get Infos AC = ' . $formattedGet);
 
 		$infos = json_decode($formattedGet, true);
 
@@ -634,74 +898,125 @@ class mideawifi extends eqLogic {
 
 	}
 
+	public function getInfosDehumidifier() {
+		// exemple de données en retour:
+		// DeHumidification [powerMode=0, mode=3, Filter=False, Water tank=False, Current humidity=73, Current humidity (decimal)=0, Wind speed=60, Set humidity=60, 
+		// Set humidity (decimal)=0, ionSetSwitch=0, isDisplay=True, dryClothesSetSwitch=0, Up&Down Swing=0]
+		$id = $this->getConfiguration('id');
+		$login = config::byKey('mailCloud', 'mideawifi');
+		$pass = config::byKey('passCloud', 'mideawifi');
+		
+		$get = shell_exec("python " . __DIR__ . "/../../resources/getDehumidifier.py $id $login $pass 2>&1");
+
+		$formattedGet = strtolower(preg_replace("/<(?:.*)([0-9]+)>/mU", "$1", $get, -1)); // fix json format
+		//$formattedGet = preg_replace("/: ,/", ": false,", $formattedGet, -1); // fix json empty value for swingmode
+		$formattedGet = preg_replace("/'/", "\"", $formattedGet, -1); // simple to double quotes
+
+		log::add('mideawifi', 'debug', 'Get Infos Dehumidifier= ' . $formattedGet);
+
+		return json_decode($formattedGet, true);
+	}
+
 	public function updateInfos() {
-		$infos = self::getInfos();
 
-		self::_updateInfos($infos);
+		//log::add('mideawifi','debug', "enter updateInfos()");
+		$currentTypeEq = $this->getConfiguration('hexadecimalType');
+		
+		if ($currentTypeEq == '0xac') { //clim
+			$infos = self::getInfosAC();
+			self::_updateInfosAC($infos);
+		} elseif ($currentTypeEq == '0xa1') { // déshumidificateur
+			$infos = self::getInfosDehumidifier();
+			//log::add('mideawifi','debug', "test info" . $infos['windspeed']);
+			if(gettype($infos) == "string") { // si on a un message d'erreur du cloud au lieu de l'array contenant les valeurs récupérées
+				log::add('mideawifi', 'error', 'Merci de vérifier les identifiants de connexion cloud sur la page de configuration.');
+			} else {
+				self::_updateInfosDehumidifier($infos);
+			}
 	}
 
-	private function _updateInfos($infos) {
-		$this->checkAndUpdateCmd("power_state", 		$infos["power_state"]);
-		$this->checkAndUpdateCmd("power_tone", 			$infos["power_tone"]);
-		$this->checkAndUpdateCmd("target_temperature", 	$infos["target_temperature"]);
-		$this->checkAndUpdateCmd("operational_mode", 	$infos["operational_mode"]);
-		$this->checkAndUpdateCmd("fan_speed", 			$infos["fan_speed"]);
-		$this->checkAndUpdateCmd("swing_mode", 			$infos["swing_mode"]);
-		$this->checkAndUpdateCmd("eco_mode", 			$infos["eco_mode"]);
-		$this->checkAndUpdateCmd("turbo_mode", 			$infos["turbo_mode"]);
-		$this->checkAndUpdateCmd("indoor_temperature", 	$infos["indoor_temperature"]);
-		$this->checkAndUpdateCmd("outdoor_temperature", $infos["outdoor_temperature"]); 
-	}
+}
 
-	private function _sendCmdToAC($params) {
-		$infos = self::getInfos(); // récup les dernieres infos
+private function _updateInfosAC($infos) {
+	$this->checkAndUpdateCmd("power_state", 		$infos["power_state"]);
+	$this->checkAndUpdateCmd("power_tone", 			$infos["power_tone"]);
+	$this->checkAndUpdateCmd("target_temperature", 	$infos["target_temperature"]);
+	$this->checkAndUpdateCmd("operational_mode", 	$infos["operational_mode"]);
+	$this->checkAndUpdateCmd("fan_speed", 			$infos["fan_speed"]);
+	$this->checkAndUpdateCmd("swing_mode", 			$infos["swing_mode"]);
+	$this->checkAndUpdateCmd("eco_mode", 			$infos["eco_mode"]);
+	$this->checkAndUpdateCmd("turbo_mode", 			$infos["turbo_mode"]);
+	$this->checkAndUpdateCmd("indoor_temperature", 	$infos["indoor_temperature"]);
+	$this->checkAndUpdateCmd("outdoor_temperature", $infos["outdoor_temperature"]); 
+}
+
+private function _updateInfosDehumidifier($infos) {
+	$this->checkAndUpdateCmd("power_mode", 			$infos["powermode"]);
+	$this->checkAndUpdateCmd("mode", 				$infos["mode"]);
+	$this->checkAndUpdateCmd("filter", 				$infos["filter"]);
+	$this->checkAndUpdateCmd("water_tank", 			$infos["watertank"]);
+	$this->checkAndUpdateCmd("humidity", 			$infos["currenthumidity"]);
+	$this->checkAndUpdateCmd("wind_speed", 			$infos["windspeed"]);
+		// isDisplay pas créé
+}
+
+//cmd info power_mode mode filter water_tank humidity wind_speed
+private function _sendCmdToAC($params) {
+	log::add('mideawifi', 'debug', "paramAC: ". $params);
+		$infos = self::getInfosAC(); // récup les dernieres infos
 		$ip = $this->getConfiguration('ip');
 		$id = $this->getConfiguration('id');
 		$port = $this->getConfiguration('port');
 
-		$script = "python3 ../../plugins/mideawifi/resources/set.py --ip $ip --id $id --port $port " . $params . " 2>&1";
-		log::add("mideawifi", "debug", "script => $script");
+		$script = "python3 ../../plugins/mideawifi/resources/setAC.py --ip $ip --id $id --port $port " . $params . " 2>&1";
+		log::add("mideawifi", "debug", "scriptAC => $script");
 		$set = shell_exec($script);
-		log::add("mideawifi", "debug", "retour script => $set");
+		log::add("mideawifi", "debug", "retour scriptAC => $set");
 
 		return true;
 	}
 
-	/*public function setPowerState($currentState) {
-		$state = !$currentState;
-		self::_sendCmdToAC("--power_state $state");
 
-		// MAJ commande info associee
-		$this->checkAndUpdateCmd("power_state", $state);
-	}*/
+	private function _sendCmdToDehumidifier($params) {
+		log::add('mideawifi', 'debug', "paramDe: ". $params);
+		$infos = self::getInfosDehumidifier(); // récup les dernieres infos
+		$id = $this->getConfiguration('id');
+		$login = config::byKey('mailCloud', 'mideawifi');
+		$pass = config::byKey('passCloud', 'mideawifi');
 
+		//$script = "python ../../plugins/mideawifi/resources/setDehumidifier.py --id $id --login $login --password $pass " .
+        //$script = "python " . __DIR__ . "/../../plugins/mideawifi/resources/setDehumidifier.py --id $id --login $login --password $pass " .
+        $script = "python " . __DIR__ . "/../../resources/setDehumidifier.py --id $id --login $login --password $pass " .
+          
+		$params . " 2>&1";
+		log::add("mideawifi", "debug", "scriptDehumidifier => $script");
+		$set = shell_exec($script);
+		log::add("mideawifi", "debug", "retour scriptDehumidifier => $set");
 
+		return true;
+	}
+
+	// ####################################################################//
+	// COMMANDES ACTIONS AC LOCAL
+	// ####################################################################//
 	public function allumer() {
 		self::_sendCmdToAC("--power_state 1");
-
-		// MAJ commande info associee
 		$this->checkAndUpdateCmd("power_state", 1);
 	}
 
 	public function eteindre() {
 		self::_sendCmdToAC("--power_state 0");
-
-		// MAJ commande info associee
 		$this->checkAndUpdateCmd("power_state", 0);
 	}
 
 	public function setEcomode() {
 		self::_sendCmdToAC("--mode_eco 1");
-
-		// MAJ commande info associee
 		$this->checkAndUpdateCmd("eco_mode", 1);
 		$this->checkAndUpdateCmd("turbo_mode", 0);
 	}
 
 	public function setTurbomode() {
 		self::_sendCmdToAC("--mode_turbo 1");
-
-		// MAJ commande info associee
 		$this->checkAndUpdateCmd("turbo_mode", 1);
 		$this->checkAndUpdateCmd("eco_mode", 0);
 	}
@@ -719,18 +1034,14 @@ class mideawifi extends eqLogic {
 			return;
 
 		self::_sendCmdToAC("--target_temperature $consigne");
-
-		// MAJ commande info associee
 		$this->checkAndUpdateCmd("target_temperature", $consigne);
 	}
 
-	public function setMode($mode = 'auto') {
+	public function setMode($mode = "auto") {
 		if(!in_array($mode, ["auto", "cool", "dry", "heat", "fan_only"]))
 			return;
 
 		self::_sendCmdToAC("--operational_mode $mode");
-
-		// MAJ commande info associee
 		$this->checkAndUpdateCmd("operational_mode", $mode);
 	}
 
@@ -739,8 +1050,6 @@ class mideawifi extends eqLogic {
 			return;
 		
 		self::_sendCmdToAC("--fan_speed $speed");
-
-		// MAJ commande info associee
 		$this->checkAndUpdateCmd("fan_speed", $speed);
 	}
 
@@ -749,24 +1058,62 @@ class mideawifi extends eqLogic {
 			return;
 
 		self::_sendCmdToAC("--swing_mode $swing");
-
-		// MAJ commande info associee
 		$this->checkAndUpdateCmd("swing_mode", $swing);
 	}
 
 	public function bipsOn() {
 		self::_sendCmdToAC("--prompt_tone 1");
-		
-		// MAJ commande info associee
+
 		$this->checkAndUpdateCmd("prompt_tone", 1);
 	}
 
 	public function bipsOff() {
 		self::_sendCmdToAC("--prompt_tone 0");
-		
-		// MAJ commande info associee
+
 		$this->checkAndUpdateCmd("prompt_tone", 0);
 	}
+
+	// ####################################################################//
+	// COMMANDES ACTIONS DEHUMIDIFIER CLOUD
+	// ####################################################################//
+	public function allumerDehumidifierCloud() {
+		log::add('mideawifi', 'debug', 'fonction allumage Dehumidifier');
+		self::_sendCmdToDehumidifier("--power_mode 1");
+		$this->checkAndUpdateCmd("power_mode", 1);
+	}
+
+	public function eteindreDehumidifierCloud() {
+		self::_sendCmdToDehumidifier("--power_mode 0");
+		$this->checkAndUpdateCmd("power_mode", 0);
+	}
+
+	public function setModeDehumidifierCloud($mode) {
+		//1: TARGET_MODE, 2: CONTINUOUS_MODE, 3: SMART_MODE, 4: DRYER_MODE
+		if($mode < 1 || $mode > 4)
+			return;
+
+		self::_sendCmdToDehumidifier("--mode $mode");
+		$this->checkAndUpdateCmd("mode", $mode);
+	}
+
+	public function setHumidityDehumidifierCloud($target) {
+		log::add('mideawifi', 'debug', 'debug target humidity' . $target);
+		if($target < 30 || $target > 70)
+			return;
+
+		self::_sendCmdToDehumidifier("--target_humidity $target");
+		$this->checkAndUpdateCmd("targetHumidity", $target);
+	}
+
+	public function setFanSpeedDehumidifierCloud($speed) {
+		// [0..100] (silent:40, medium:60, high:80)
+		if(!in_array($speed, [40, 60, 80]))
+			return;
+
+		self::_sendCmdToDehumidifier("--wind_speed $speed");
+		$this->checkAndUpdateCmd("wind_speed", $speed);
+	}
+	//cmd info power_mode mode filter water_tank humidity wind_speed
 }
 
 class mideawifiCmd extends cmd {
@@ -789,54 +1136,78 @@ class mideawifiCmd extends cmd {
 
 		$eqLogic = $this->getEqLogic(); // Récupération de l’eqlogic
 
-		switch ($this->getLogicalId()) {                
-			case 'refresh': 
-				$eqLogic->updateInfos();
-				break;
-			/*case 'setPowerState':
-				$eqLogic->setPowerState($_options['state']);
-				break;*/
-			case 'on':
-				$eqLogic->allumer();
-				break;
-			case 'off':
-				$eqLogic->eteindre();
-				break;
-			case 'setEcomode':
-				$eqLogic->setEcomode();
-				break;
-			case 'setTurbomode':
-				$eqLogic->setTurbomode();
-				break;
-			case 'setNormalmode':
-				$eqLogic->setNormalmode();
-				break;
-			case 'setTemperature':
-            			$temp = isset($_options['text']) ? $_options['text'] : $_options['slider'];
-				$eqLogic->setTemperature($temp);
-				break;
-			case 'setMode':
-				$eqLogic->setMode($_options['select']);
-				break;
-			case 'setFanspeed':
-				$eqLogic->setFanspeed($_options['select']);
-				break;
-			case 'setSwingmode':
-				$eqLogic->setSwingmode($_options['select']);
-				break;
-			case 'bipsOn':
-				$eqLogic->bipsOn();
-				break;
-			case 'bipsOff':
-				$eqLogic->bipsOff();
-				break;          
-			default:
-				throw new Error('This should not append!');
-				log::add('mideawifi', 'warn', 'Error while executing cmd ' . $this->getLogicalId());
-				break;
-		}
+		log::add("mideawifi", "debug", "LogicalId action => " . $this->getLogicalId());
+		Log::add('mideawifi', 'debug', '$_options[] traité: ' . json_encode($_options));
 
-		//Log::add('mideawifi', 'debug', json_encode($_options));
+		switch ($this->getLogicalId()) {
+			case 'refresh': 
+			$eqLogic->updateInfos();
+			break;
+
+			// ####################################################################//
+			// COMMANDES ACTIONS LOCAL AC
+			// ####################################################################//
+			case 'on':
+			$eqLogic->allumer();
+			break;
+			case 'off':
+			$eqLogic->eteindre();
+			break;
+			case 'setEcomode':
+			$eqLogic->setEcomode();
+			break;
+			case 'setTurbomode':
+			$eqLogic->setTurbomode();
+			break;
+			case 'setNormalmode':
+			$eqLogic->setNormalmode();
+			break;
+			case 'setTemperature':
+			$temp = isset($_options['text']) ? $_options['text'] : $_options['slider'];
+			$eqLogic->setTemperature($temp);
+			break;
+			case 'setMode':
+			$eqLogic->setMode($_options['select']);
+			break;
+			case 'setFanspeed':
+			$eqLogic->setFanspeed($_options['select']);
+			break;
+			case 'setSwingmode':
+			$eqLogic->setSwingmode($_options['select']);
+			break;
+			case 'bipsOn':
+			$eqLogic->bipsOn();
+			break;
+			case 'bipsOff':
+			$eqLogic->bipsOff();
+			break;
+
+			// ####################################################################//
+			// COMMANDES CLOUD DEHUMIDIFIER
+			// ####################################################################//
+			case 'onDehumidifierCloud':
+			log::add('mideawifi','debug', "Lancement script Set Dehumidifier");
+			$eqLogic->allumerDehumidifierCloud();
+			break;
+			case 'offDehumidifierCloud':
+			$eqLogic->eteindreDehumidifierCloud();
+			break;
+			case 'setModeDehumidifierCloud':
+			$eqLogic->setModeDehumidifierCloud($_options['select']);
+			break;
+			case 'setHumidityDehumidifierCloud':
+			$temp = isset($_options['text']) ? $_options['text'] : $_options['slider'];
+			$eqLogic->setHumidityDehumidifierCloud($temp);
+			break;
+			case 'setFanSpeedDehumidifierCloud':
+			$eqLogic->setFanSpeedDehumidifierCloud($_options['select']);
+			break;
+
+			default:
+			throw new Error('This should not append!');
+			log::add('mideawifi', 'warn', 'Error while executing cmd ' . $this->getLogicalId());
+			break;
+		}
 
 		return;
 	}

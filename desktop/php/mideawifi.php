@@ -60,7 +60,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 		<div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
 			<div role="tabpanel" class="tab-pane active" id="eqlogictab">
 				<br/>
-				<form class="form-horizontal">
+				<form class="form-horizontal col-md-8">
 					<fieldset>
 						<div class="form-group">
 							<label class="col-sm-3 control-label">{{Nom de la clim}}</label>
@@ -122,14 +122,14 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="port" />
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="form-group noneCloudOptions">
 							<label class="col-sm-3 control-label">{{Type de ventilation possible}}</label>
 							<div class="col-sm-3">
 								<?php $currentSwingmode = jeedom::getConfiguration('swingmode'); ?>
 								<select id="swingmode" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="swingmode">
-                                  <option value="Vertical" <?php ($currentSwingmode == "Vertical") ? "selected" : "" ?>>Vertical</option>
-                                  <option value="Horizontal" <?php ($currentSwingmode == "Horizontal") ? "selected" : "" ?>>Horizontal</option>
-                                  <option value="Both" <?php ($currentSwingmode == "Both") ? "selected" : "" ?>>Les deux</option>
+                                  <option value="Vertical">Vertical</option>
+                                  <option value="Horizontal">Horizontal</option>
+                                  <option value="Both">Les deux</option>
                                 </select>
 							</div>
 						</div>
@@ -139,6 +139,23 @@ $eqLogics = eqLogic::byType($plugin->getId());
 						</div>
 
 					</fieldset>
+				</form>
+				<legend><i class="fas fa-info"></i> {{Informations}}</legend>
+				<form class="form-horizontal col-md-4">
+					<label class="col-sm-3 control-label">{{Type d'équipement}}</label>
+					<div class="col-sm-3">
+						<input type="hidden" class="eqLogicAttr cmdAttr" data-l1key="configuration" data-l2key="hexadecimalType" />
+						<div class="form-group cmdAttr label label-primary" id="nameType" style="font-size : 1em"></div>
+						<div class="form-group">
+						<img src="plugins/mideawifi/core/images/0xac.png" data-original=".png" id="imgAppareil" class="img-responsive" style="width:120px" onerror="this.src='plugins/mideawifi/core/images/0xac.png'" /></div>
+					</div>
+				</form>
+				<form class="form-horizontal col-md-4" style="margin-top: 20px;">
+					<label class="col-sm-3 control-label">{{Cloud nécessaire}}</label>
+					<div class="col-sm-3">
+						<input type="hidden" class="eqLogicAttr cmdAttr" data-l1key="configuration" data-l2key="version" />
+						<div class="form-group cmdAttr label label-primary" id="cloudVersion" style="font-size : 1em"></div>
+					</div>
 				</form>
 			</div>
 			<div role="tabpanel" class="tab-pane" id="commandtab">

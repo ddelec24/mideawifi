@@ -20,14 +20,14 @@ echo "*"
 echo "* Update repository"
 echo "*"
 apt-get update
-echo 25 > ${PROGRESS_FILE}
+echo 20 > ${PROGRESS_FILE}
 
 echo "*"
-echo "* Install python3.7 and pip3"
+echo "* Install python3.7 + pip3 and python2.7 + pip"
 echo "*"
-apt-get -y install  python3.7 python3-pip
+apt-get -y install  python3.7 python3-pip python2.7 python-pip
 
-echo 50 > ${PROGRESS_FILE}
+echo 60 > ${PROGRESS_FILE}
 
 echo "*"
 echo "* Install pip3 required modules"
@@ -36,7 +36,14 @@ pip3 install -I msmart==0.1.23
 # click va etre mis dans les require a la prochaine version msmart, a surveiller
 pip3 install click
 
-echo 75 > ${PROGRESS_FILE}
+echo 70 > ${PROGRESS_FILE}
+echo "*"
+echo "* Install pip required modules"
+echo "*"
+pip install -I midea_inventor_lib
+
+
+echo 80 > ${PROGRESS_FILE}
 echo "*"
 echo "* Updating discover duration"
 echo "*"

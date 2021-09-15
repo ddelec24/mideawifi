@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.0.6beta - 2021-09-15  
++ Fix de bug et tests ok avec un premier utilisateur pour un déshumidificateur cloud  
++ /!\ Pour utiliser cette beta il faut supprimer vos équipements et relancer les dépendances  
+  
+## 1.0.5beta - 2021-07-01
++ Ajout d'un mode dehumidifier permettant une gestion via le cloud
+
 ## 2021-06-03
 + Ajout d'informations dans la documentation + annulation branche beta
 

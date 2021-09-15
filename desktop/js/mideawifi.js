@@ -58,6 +58,29 @@ function addCmdToTable(_cmd) {
 	jeedom.cmd.changeType($('#table_cmd tbody tr:last'), init(_cmd.subType));
 }
 
+$('.eqLogicAttr[data-l1key=configuration][data-l2key=hexadecimalType]').on('change',function(){
+	type = $(this).value()
+	var humanType = {'0xac': 'Climatiseur', '0xa1': 'Déshumidificateur'};
+	$("#nameType").html(humanType[type]);
+	$("#imgAppareil").attr('src', 'plugins/mideawifi/core/images/' + type + '.png');
+});
+
+$('.eqLogicAttr[data-l1key=configuration][data-l2key=version]').on('change',function(){
+	version = $(this).value()
+	var cloudVersion = (version == 'v2') ? 'Non' : 'Oui'
+	;
+	$("#cloudVersion").html(cloudVersion);
+	if(version != 'v2') {
+		$("#cloudVersion").removeClass('label-primary').addClass('label-warning');
+		$('.noneCloudOptions').hide();
+	} else {
+		$("#cloudVersion").removeClass('label-warning').addClass('label-primary');
+		$('.noneCloudOptions').show();
+	}
+
+});
+
+
 // Lance un scan Midea
 $('.eqLogicAction[data-action=scanMideaDevices]').on('click', function() {
 	$('.eqLogicAction span:first').text("{{Scan en cours...}}").css({'color' : 'red'});
@@ -86,7 +109,7 @@ function runMideaDiscovery() {
 				return;
 			}
 			console.log(data);
-			//console.log(data.result.new);
+
 			if(data.result.new == 0){
 				$('#div_results').empty().append("<center><span style='color:#767676;font-size:1.2em;font-weight: bold;'>{{Aucun nouvel appareil détecté}}</span></center>");
 				return;
@@ -95,11 +118,10 @@ function runMideaDiscovery() {
 				$('#div_results').empty().append("<center><span style='color:#767676;font-size:1.2em;font-weight: bold;'> " + data.result.new + "{{ " + plurilizedNewDevices + "}}</span></center>");
 			}
 
-			//if ($('div.eqLogicThumbnailContainer').length < 1) {
-				// create div container for results
+
+			// create div container for results
 			$("#div_results").append('<div class="eqLogicThumbnailContainer" id="newEqDetected" style="position: relative; height: 173px;"></div>');
-			//}
-			//<legend>{{Appareils trouvés}}</legend>
+
 			var html = '';
 			var currentLeft = 0;
 			for (var i in data.result.devices) {
@@ -107,7 +129,7 @@ function runMideaDiscovery() {
 				supported = true;
 				redColor = '';
 				if(data.result.devices[i].supported == "unsupported") {
-					$('#div_alert').showAlert({message: "Climatiseur " + data.result.devices[i].id + " détecté mais à priori non supporté!", level: 'danger'});
+					$('#div_alert').showAlert({message: "Equipement " + data.result.devices[i].id + " détecté mais à priori non supporté ou utilisation du cloud!", level: 'danger'});
 					supported = false;
 				}
 
