@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2022-11-10 - informations
++ Une nouvelle version du plugin est en préparation, compatible AC/déshumidificateur, cloud ou non.  
++ Jeedom 4.2 ou supérieur sera nécessaire.
+  
 ## 2021-06-03
 + Ajout d'informations dans la documentation + annulation branche beta
 
