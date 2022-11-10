@@ -1,5 +1,4 @@
 <?php
-
 /* This file is part of Jeedom.
 *
 * Jeedom is free software: you can redistribute it and/or modify
@@ -18,9 +17,45 @@
 
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 /*
- * Non obligatoire mais peut être utilisé si vous voulez charger en même temps que votre
- * plugin des librairies externes (ne pas oublier d'adapter plugin_info/info.xml).
- * 
- * 
- */
+*
+* Fichier d’inclusion si vous avez plusieurs fichiers de class ou 3rdParty à inclure
+*
+*/
 
+function curlMideawifiDocker($endpoint, $params) {
+
+  $params = json_encode($params); //array to json
+  $port = trim(config::byKey('portDocker', 'mideawifi'));
+  
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, "http://127.0.0.1:" . $port . $endpoint); // docker management ne prend que du local et on est en mode host donc docker transparent => ip locale
+  curl_setopt($ch, CURLOPT_PORT, $port);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+  curl_setopt($ch, CURLOPT_POST, true);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+  //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+  //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+  $headers = array(
+    'Content-Type:application/json',
+    'Content-Length: ' . strlen($params),
+    //"Accept: application/json"
+  );
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  
+  $data = curl_exec($ch);
+  
+  if (curl_error($ch)) {
+    log::add('mideawifi', 'warn', 'Communication error : ' . curl_error($ch));
+  }
+  
+  curl_close($ch);
+  
+  /*log::add("mideawifi", "debug", "RAW : " . $data);
+  $data = str_replace('\r\n','aaaa', $data);
+  $data = str_replace('\n','aaaa', $data);
+  $data = str_replace('\r','aaaa', $data);
+  log::add("mideawifi", "debug", "FORMATTED : " . $data);*/
+  $data = str_replace("\r\n", '\r\n', $data); // tricks for new line in json
+  return $data;
+}
