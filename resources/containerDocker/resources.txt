@@ -1,8 +1,0 @@
-https://realpython.com/api-integration-in-python/#flask
-
-https://github.com/nbogojevic/midea-beautiful-air
-
-
-https://www.piwheels.org/project/cryptography/
-
-https://hub.docker.com/r/arm32v7/python/tags?page=1&name=3.9

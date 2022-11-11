@@ -1,4 +1,0 @@
-setuptools==65.5.0
-cryptography==38.0.1
-midea-beautiful-air==0.9.15
-Flask==2.2.2
