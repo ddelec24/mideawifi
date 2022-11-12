@@ -11,10 +11,10 @@
 	"hasDependency" : true,
 	"hasOwnDeamon" : false,
 	"maxDependancyInstallTime" : 0,
-	"changelog" : "https://ddelec24.github.io/docs-jeedom/#language#/changelog",
-	"documentation" : "https://ddelec24.github.io/docs-jeedom/#language#/",
-	"changelog_beta" : "https://ddelec24.github.io/docs-jeedom/beta/changelog",
-	"documentation_beta" : "https://ddelec24.github.io/docs-jeedom/#language#/beta/",
+	"changelog" : "https://ddelec24.github.io/docs-jeedom/mideawifi/#language#/changelog",
+	"documentation" : "https://ddelec24.github.io/docs-jeedom/mideawifi/#language#/",
+	"changelog_beta" : "https://ddelec24.github.io/docs-jeedom/mideawifi/#language#/beta/changelog",
+	"documentation_beta" : "https://ddelec24.github.io/docs-jeedom/mideawifi/#language#/beta/",
 	"link" : {
 		"forum":"https://community.jeedom.com/tag/plugin-mideawifi"
 	},
