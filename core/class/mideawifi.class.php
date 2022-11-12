@@ -211,6 +211,24 @@ class mideawifi extends eqLogic {
                             "display" => ["forceReturnLineBefore" => 0],
                             "template" => ["dashboard" => "default"] 
                             ],
+            "horizontalswing" => [
+                            "type" => "info", "subType" => "binary", "name" => "Swing Horizontal",
+                            "order" => 880, "visible" => 0, "historized" => 0,
+                            "display" => ["forceReturnLineBefore" => 0],
+                            "template" => ["dashboard" => "default"] 
+                            ],
+            "verticalswing" =>       [
+                            "type" => "info", "subType" => "binary", "name" => "Swing Vertical",
+                            "order" => 881, "visible" => 0, "historized" => 0,
+                            "display" => ["forceReturnLineBefore" => 0],
+                            "template" => ["dashboard" => "default"] 
+                            ],
+            "turbofan" =>   [
+                            "type" => "info", "subType" => "binary", "name" => "Mode",
+                            "order" => 8, "visible" => 1, "historized" => 0,
+                            "display" => ["forceReturnLineBefore" => 0],
+                            "template" => ["dashboard" => "default"] 
+                            ],
             /*"purify" =>     [
                             "type" => "info", "subType" => "binary", "name" => "Mode Purificateur",
                             "order" => 8, "visible" => 1, "historized" => 1,
