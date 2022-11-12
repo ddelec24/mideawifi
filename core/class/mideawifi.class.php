@@ -452,6 +452,18 @@ class mideawifi extends eqLogic {
             	self::createAndUpdateCmd(false); // update datas before sending new vals
 		log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
             	break;
+          case "setMode":
+            	$cmdLabel = "mode";
+            	$cmdValue = $val; 
+            	self::createAndUpdateCmd(false); // update datas before sending new vals
+		log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
+            	break;
+          case "setFanSpeed":
+            	$cmdLabel = "fan-speed";
+            	$cmdValue = $val; 
+            	self::createAndUpdateCmd(false); // update datas before sending new vals
+		log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
+            	break;
           default:
               throw new Error('This should not append!');
               log::add('mideawifi', 'warn', 'Error while executing cmd ' . $this->getLogicalId());
@@ -519,6 +531,14 @@ class mideawifiCmd extends cmd {
           case 'setTemperature':
             	log::add('mideawifi', 'debug', "Action setTemperature");
             	$eqLogic->sendCmd('setTemperature', isset($_options['text']) ? $_options['text'] : $_options['slider']); // scenario compatibility
+            	break;
+            case 'setMode':
+            	log::add('mideawifi', 'debug', "Action setMode");
+            	$eqLogic->sendCmd('setMode', isset($_options['select']) ? $_options['select'] : $_options['slider']); // scenario compatibility
+            	break;
+            case 'setFanSpeed':
+            	log::add('mideawifi', 'debug', "Action setFanSpeed");
+            	$eqLogic->sendCmd('setFanSpeed', isset($_options['select']) ? $_options['select'] : $_options['slider']); // scenario compatibility
             	break;
 			default:
               throw new Error('This should not append!');
