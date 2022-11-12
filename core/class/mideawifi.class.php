@@ -449,8 +449,8 @@ class mideawifi extends eqLogic {
           case "setTemperature":
             	$cmdLabel = "target-temperature";
             	$cmdValue = strval(floor($val * 2) / 2); // 0.5 floor
-            	$eqLogic->createAndUpdateCmd(false); // update datas before sending new vals
-            	log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
+            	self::createAndUpdateCmd(false); // update datas before sending new vals
+		log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
             	break;
           default:
               throw new Error('This should not append!');
