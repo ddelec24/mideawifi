@@ -70,10 +70,10 @@ def _output(appliance: LanDevice, show_credentials: bool = False) -> None:
         print(f"  purify  = {state.purifier}")
         print(f"  eco     = {state.eco_mode}")
         print(f"  sleep   = {state.comfort_sleep}")
-        print(f"  F       = {state.fahrenheit}")
         print(f"  verticalswing = {state.vertical_swing}")
         print(f"  horizontalswing = {state.horizontal_swing}")
         print(f"  turbofan  = {state.turbo_fan}")
+        print(f"  F       = {state.fahrenheit}")
 
     print(f"  error   = {getattr(appliance.state, 'error_code')}")
     print(f"  supports= {getattr(appliance.state, 'capabilities')}")
