@@ -498,8 +498,9 @@ class mideawifi extends eqLogic {
           case "setHorizontalSwing":
             	$cmdLabel = "horizontal-swing";
             	$cmdValue = $val; 
+		log::add('mideawifi', 'debug', "PRE HORIZONTAL SWING " . $cmdLabel . " " . $cmdValue);
             	self::createAndUpdateCmd(false); // update datas before sending new vals
-				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
+		log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
             	break;
           case "setVerticalSwing":
             	$cmdLabel = "vertical-swing";
@@ -596,6 +597,7 @@ class mideawifiCmd extends cmd {
                 $newVal = ($oldval) ? 0 : 1;
                 log::add('mideawifi', 'debug', "Action setHorizontalSwing  = > OLD " . $oldVal . " ; NEW= > " . $newVal );
                 $eqLogic->sendCmd('setHorizontalSwing', $newVal);
+		break;
             case 'setVerticalSwing':
             	log::add('mideawifi', 'debug', "Action setVerticalSwing");
             	$newVal = ($this->getCmd(null, "verticalswing")->getValue() == 1) ? 0 : 1;
