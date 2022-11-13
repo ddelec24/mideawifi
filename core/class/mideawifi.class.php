@@ -497,20 +497,19 @@ class mideawifi extends eqLogic {
             	break;
           case "setHorizontalSwing":
             	$cmdLabel = "horizontal-swing";
-            	$cmdValue = $val; 
-		log::add('mideawifi', 'debug', "PRE HORIZONTAL SWING " . $cmdLabel . " " . $cmdValue);
+            	$cmdValue = (string)$val;
             	self::createAndUpdateCmd(false); // update datas before sending new vals
-		log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
+				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
             	break;
           case "setVerticalSwing":
             	$cmdLabel = "vertical-swing";
-            	$cmdValue = $val; 
+            	$cmdValue = (string)$val; 
             	self::createAndUpdateCmd(false); // update datas before sending new vals
 				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
             	break;
           case "setTurboFan":
             	$cmdLabel = "turbo-fan";
-            	$cmdValue = $val; 
+            	$cmdValue = (string)$val;
             	self::createAndUpdateCmd(false); // update datas before sending new vals
 				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
             	break;
@@ -525,7 +524,7 @@ class mideawifi extends eqLogic {
           return;
     
     	$command = "--$cmdLabel $cmdValue ";
-    	
+    	log::add('mideawifi', 'debug', "commande à envoyer $command");
     	// when set a new lower temp target, a bug occurs. forcing eco-mode state fix that
     	$additionalParams = "";
     	if($cmd == "setTemperature") {
@@ -595,17 +594,20 @@ class mideawifiCmd extends cmd {
                 $hswing = $eqLogic->getCmd(null, "horizontalswing");
                 $oldVal = $hswing->execCmd();
                 $newVal = ($oldVal) ? 0 : 1;
-                log::add('mideawifi', 'debug', "Action setHorizontalSwing  = > OLD " . $oldVal . " ; NEW= > " . $newVal );
                 $eqLogic->sendCmd('setHorizontalSwing', $newVal);
 		break;
             case 'setVerticalSwing':
             	log::add('mideawifi', 'debug', "Action setVerticalSwing");
-            	$newVal = ($this->getCmd(null, "verticalswing")->getValue() == 1) ? 0 : 1;
+            	$hswing = $eqLogic->getCmd(null, "verticalswing");
+            	$oldVal = $hswing->execCmd();
+                $newVal = ($oldVal) ? 0 : 1;
             	$eqLogic->sendCmd('setVerticalSwing', $newVal);
             	break;
             case 'setTurboFan':
             	log::add('mideawifi', 'debug', "Action setTurboFan");
-            	$newVal = ($this->getCmd(null, "turbofan")->getValue() == 1) ? 0 : 1;
+            	$hswing = $eqLogic->getCmd(null, "turbofan");
+            	$oldVal = $hswing->execCmd();
+                $newVal = ($oldVal) ? 0 : 1;
             	$eqLogic->sendCmd('setTurboFan', $newVal);
             	break;
 			default:
