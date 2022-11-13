@@ -594,7 +594,7 @@ class mideawifiCmd extends cmd {
                 log::add('mideawifi', 'debug', "Action setHorizontalSwing");
                 $hswing = $eqLogic->getCmd(null, "horizontalswing");
                 $oldVal = $hswing->execCmd();
-                $newVal = ($oldval) ? 0 : 1;
+                $newVal = ($oldVal) ? 0 : 1;
                 log::add('mideawifi', 'debug', "Action setHorizontalSwing  = > OLD " . $oldVal . " ; NEW= > " . $newVal );
                 $eqLogic->sendCmd('setHorizontalSwing', $newVal);
 		break;
