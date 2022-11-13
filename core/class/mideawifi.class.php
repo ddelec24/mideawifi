@@ -212,20 +212,20 @@ class mideawifi extends eqLogic {
                             "template" => ["dashboard" => "default"] 
                             ],
             "horizontalswing" => [
-                            "type" => "info", "subType" => "binary", "name" => "Swing Horizontal",
-                            "order" => 880, "visible" => 0, "historized" => 0,
+                            "type" => "info", "subType" => "binary", "name" => "Etat Swing Horizontal",
+                            "order" => 10, "visible" => 1, "historized" => 0,
                             "display" => ["forceReturnLineBefore" => 0],
                             "template" => ["dashboard" => "default"] 
                             ],
             "verticalswing" =>       [
-                            "type" => "info", "subType" => "binary", "name" => "Swing Vertical",
-                            "order" => 881, "visible" => 0, "historized" => 0,
+                            "type" => "info", "subType" => "binary", "name" => "Etat Swing Vertical",
+                            "order" => 11, "visible" => 1, "historized" => 0,
                             "display" => ["forceReturnLineBefore" => 0],
                             "template" => ["dashboard" => "default"] 
                             ],
             "turbofan" =>   [
-                            "type" => "info", "subType" => "binary", "name" => "Mode",
-                            "order" => 8, "visible" => 1, "historized" => 0,
+                            "type" => "info", "subType" => "binary", "name" => "Etat Turbo",
+                            "order" => 12, "visible" => 1, "historized" => 0,
                             "display" => ["forceReturnLineBefore" => 0],
                             "template" => ["dashboard" => "default"] 
                             ],
@@ -257,8 +257,8 @@ class mideawifi extends eqLogic {
                             "template" => ["dashboard" => "default"] 
                             ],*/
             "eco" =>  [
-                            "type" => "info", "subType" => "binary", "name" => "Eco",
-                            "order" => 10, "visible" => 1, "historized" => 0,
+                            "type" => "info", "subType" => "binary", "name" => "Etat Eco",
+                            "order" => 8, "visible" => 1, "historized" => 0,
                             "display" => ["forceReturnLineBefore" => 0],
                             "template" => ["dashboard" => "default"] 
                             ],
@@ -361,14 +361,27 @@ class mideawifi extends eqLogic {
                                   "value" => $this->getCmd(null, "fan")->getId(),
                                   "template" => ["dashboard" => "default"] 
                                   ],
-          /*"setSwingmode" =>		  [
-                                  "type" => "action", "subType" => "select", "name" => "Type de ventilation",
+          "setHorizontalSwing" => [
+                                  "type" => "action", "subType" => "other", "name" => "Horizontal Swing",
                                   "order" => 55, "visible" => 1, "historized" => 0,
-                                  "display" => ["forceReturnLineBefore" => 1, "forceReturnLineAfter" => 1],
-                                  "configuration" => ["listValue" => "0|Eteint;1|Vertical;2|Horizontal;3|Les deux"],
-                                  "value" => $this->getCmd(null, "fan_swing")->getId(),
+                                  "display" => ["forceReturnLineBefore" => 1, "forceReturnLineAfter" => 0],
+                                  "value" => $this->getCmd(null, "horizontalswing")->getId(),
                                   "template" => ["dashboard" => "default"] 
-                                  ],*/
+                                  ],
+          "setVerticalSwing" =>	  [
+                                  "type" => "action", "subType" => "other", "name" => "Vertical Swing",
+                                  "order" => 56, "visible" => 1, "historized" => 0,
+                                  "display" => ["forceReturnLineBefore" => 0, "forceReturnLineAfter" => 0],
+                                  "value" => $this->getCmd(null, "verticalswing")->getId(),
+                                  "template" => ["dashboard" => "default"] 
+                                  ],
+          "setTurboFan" =>	  [
+                                  "type" => "action", "subType" => "other", "name" => "Turbo",
+                                  "order" => 57, "visible" => 1, "historized" => 0,
+                                  "display" => ["forceReturnLineBefore" => 0, "forceReturnLineAfter" => 0],
+                                  "value" => $this->getCmd(null, "turbofan")->getId(),
+                                  "template" => ["dashboard" => "default"] 
+                                  ],
 		];
       
       	if($bCreateCmd) {
@@ -468,19 +481,37 @@ class mideawifi extends eqLogic {
             	$cmdLabel = "target-temperature";
             	$cmdValue = strval(floor($val * 2) / 2); // 0.5 floor
             	self::createAndUpdateCmd(false); // update datas before sending new vals
-		log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
+				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
             	break;
           case "setMode":
             	$cmdLabel = "mode";
             	$cmdValue = $val; 
             	self::createAndUpdateCmd(false); // update datas before sending new vals
-		log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
+				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
             	break;
           case "setFanSpeed":
             	$cmdLabel = "fan-speed";
             	$cmdValue = $val; 
             	self::createAndUpdateCmd(false); // update datas before sending new vals
-		log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
+				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
+            	break;
+          case "setHorizontalSwing":
+            	$cmdLabel = "horizontal-swing";
+            	$cmdValue = $val; 
+            	self::createAndUpdateCmd(false); // update datas before sending new vals
+				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
+            	break;
+          case "setVerticalSwing":
+            	$cmdLabel = "vertical-swing";
+            	$cmdValue = $val; 
+            	self::createAndUpdateCmd(false); // update datas before sending new vals
+				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
+            	break;
+          case "setTurboFan":
+            	$cmdLabel = "turbo-fan";
+            	$cmdValue = $val; 
+            	self::createAndUpdateCmd(false); // update datas before sending new vals
+				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
             	break;
           default:
               throw new Error('This should not append!');
@@ -498,7 +529,7 @@ class mideawifi extends eqLogic {
     	$additionalParams = "";
     	if($cmd == "setTemperature") {
           	$currentMode = $this->getCmd(null, "mode");
-          	if($currentMode == 2) { // eco mode exists only in AC mode
+          	if($currentMode == 2) { // eco mode exists only in cooling mode
             	$cmdEco = $this->getCmd(null, "eco");
               	$isEco = $cmdEco->execCmd();
               	$additionalParams = ($isEco) ? "--eco-mode 1" : "--eco-mode 0"; // @TODO a vérifier si la valeur "eco" récupérée dans les supports correspond bien au mode de clim éco
@@ -557,6 +588,21 @@ class mideawifiCmd extends cmd {
             case 'setFanSpeed':
             	log::add('mideawifi', 'debug', "Action setFanSpeed");
             	$eqLogic->sendCmd('setFanSpeed', isset($_options['select']) ? $_options['select'] : $_options['slider']); // scenario compatibility
+            	break;
+            case 'setHorizontalSwing':
+            	log::add('mideawifi', 'debug', "Action setHorizontalSwing");
+            	$newVal = ($this->getCmd(null, "horizontalswing")->getValue() == 1) ? 0 : 1;
+            	$eqLogic->sendCmd('setHorizontalSwing', $newVal);
+            	break;
+            case 'setVerticalSwing':
+            	log::add('mideawifi', 'debug', "Action setVerticalSwing");
+            	$newVal = ($this->getCmd(null, "verticalswing")->getValue() == 1) ? 0 : 1;
+            	$eqLogic->sendCmd('setVerticalSwing', $newVal);
+            	break;
+            case 'setTurboFan':
+            	log::add('mideawifi', 'debug', "Action setTurboFan");
+            	$newVal = ($this->getCmd(null, "turbofan")->getValue() == 1) ? 0 : 1;
+            	$eqLogic->sendCmd('setTurboFan', $newVal);
             	break;
 			default:
               throw new Error('This should not append!');
