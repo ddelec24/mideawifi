@@ -127,6 +127,9 @@ function installMideawifiDocker() {
   
   // build docker image
   $arch = (system::getArch() == "arm") ? "arm" : ""; // image docker spéciale si arm 32bits
+
+  $removeOldBuild = shell_exec(system::getCmdSudo() . "docker rmi -f midea-beautiful-air:latest");
+
   $cmd = system::getCmdSudo() . "docker build --tag midea-beautiful-air -f " . 
     								dirname(__FILE__) . "/../../resources/containerDocker/" . $arch . "Dockerfile " .
     								dirname(__FILE__) . "/../../resources/containerDocker";
