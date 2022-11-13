@@ -28,6 +28,8 @@ $dockerContainer = eqLogic::byLogicalId('1::mideawifi', 'docker2');
 $colorCheckContainer = "red";
 $classCheckContainer = "fa-times-circle";
 
+docker2::pull(); // refresh infos containers
+
 if(is_object($dockerContainer)) {
 	$info = $dockerContainer->getCmd(null, 'state');
 	//log::add('signal', 'debug', "Etat du container docker signal: " . $info->execCmd());
