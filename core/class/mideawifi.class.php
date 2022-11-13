@@ -223,7 +223,7 @@ class mideawifi extends eqLogic {
                             "display" => ["forceReturnLineBefore" => 0],
                             "template" => ["dashboard" => "default"] 
                             ],
-            "turbofan" =>   [
+            "turbo" =>   [
                             "type" => "info", "subType" => "binary", "name" => "Etat Turbo",
                             "order" => 12, "visible" => 1, "historized" => 0,
                             "display" => ["forceReturnLineBefore" => 0],
@@ -375,11 +375,11 @@ class mideawifi extends eqLogic {
                                   "value" => $this->getCmd(null, "verticalswing")->getId(),
                                   "template" => ["dashboard" => "default"] 
                                   ],
-          "setTurboFan" =>	  [
+          "setTurbo" =>	  [
                                   "type" => "action", "subType" => "other", "name" => "Turbo",
                                   "order" => 57, "visible" => 1, "historized" => 0,
                                   "display" => ["forceReturnLineBefore" => 0, "forceReturnLineAfter" => 0],
-                                  "value" => $this->getCmd(null, "turbofan")->getId(),
+                                  "value" => $this->getCmd(null, "turbo")->getId(),
                                   "template" => ["dashboard" => "default"] 
                                   ],
 		];
@@ -507,8 +507,8 @@ class mideawifi extends eqLogic {
             	self::createAndUpdateCmd(false); // update datas before sending new vals
 				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
             	break;
-          case "setTurboFan":
-            	$cmdLabel = "turbo-fan";
+          case "setTurbo":
+            	$cmdLabel = "turbo";
             	$cmdValue = (string)$val;
             	self::createAndUpdateCmd(false); // update datas before sending new vals
 				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
@@ -603,12 +603,12 @@ class mideawifiCmd extends cmd {
                 $newVal = ($oldVal) ? 0 : 1;
             	$eqLogic->sendCmd('setVerticalSwing', $newVal);
             	break;
-            case 'setTurboFan':
-            	log::add('mideawifi', 'debug', "Action setTurboFan");
-            	$hswing = $eqLogic->getCmd(null, "turbofan");
+            case 'setTurbo':
+            	log::add('mideawifi', 'debug', "Action setTurbo");
+            	$hswing = $eqLogic->getCmd(null, "turbo");
             	$oldVal = $hswing->execCmd();
                 $newVal = ($oldVal) ? 0 : 1;
-            	$eqLogic->sendCmd('setTurboFan', $newVal);
+            	$eqLogic->sendCmd('setTurbo', $newVal);
             	break;
 			default:
               throw new Error('This should not append!');
