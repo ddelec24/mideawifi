@@ -497,7 +497,7 @@ class mideawifi extends eqLogic {
             	break;
           case "setHorizontalSwing":
             	$cmdLabel = "horizontal-swing";
-            	$cmdValue = $val; 
+            	$cmdValue = (string)$val;
 		log::add('mideawifi', 'debug', "PRE HORIZONTAL SWING " . $cmdLabel . " " . $cmdValue);
             	self::createAndUpdateCmd(false); // update datas before sending new vals
 		log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
@@ -525,7 +525,7 @@ class mideawifi extends eqLogic {
           return;
     
     	$command = "--$cmdLabel $cmdValue ";
-    	
+    	log::add('mideawifi', 'debug', "commande à envoyer $command");
     	// when set a new lower temp target, a bug occurs. forcing eco-mode state fix that
     	$additionalParams = "";
     	if($cmd == "setTemperature") {
