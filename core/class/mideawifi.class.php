@@ -357,7 +357,7 @@ class mideawifi extends eqLogic {
                                   "type" => "action", "subType" => "select", "name" => "Vitesse ventilation",
                                   "order" => 54, "visible" => 1, "historized" => 0,
                                   "display" => ["forceReturnLineBefore" => 1, "forceReturnLineAfter" => 1],
-                                  "configuration" => ["listValue" => "102|Automatique;100|Turbo;80|Rapide;60|Normal;40|Lent;20|Silencieux"],
+                                  "configuration" => ["listValue" => "102|Automatique;80|Rapide;60|Normal;40|Lent;20|Silencieux"],
                                   "value" => $this->getCmd(null, "fan")->getId(),
                                   "template" => ["dashboard" => "default"] 
                                   ],
