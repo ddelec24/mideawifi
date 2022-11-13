@@ -590,10 +590,12 @@ class mideawifiCmd extends cmd {
             	$eqLogic->sendCmd('setFanSpeed', isset($_options['select']) ? $_options['select'] : $_options['slider']); // scenario compatibility
             	break;
             case 'setHorizontalSwing':
-            	log::add('mideawifi', 'debug', "Action setHorizontalSwing");
-            	$newVal = ($this->getCmd(null, "horizontalswing")->getValue() == 1) ? 0 : 1;
-            	$eqLogic->sendCmd('setHorizontalSwing', $newVal);
-            	break;
+                log::add('mideawifi', 'debug', "Action setHorizontalSwing");
+                $hswing = $eqLogic->getCmd(null, "horizontalswing");
+                $oldVal = $hswing->execCmd();
+                $newVal = ($oldval) ? 0 : 1;
+                log::add('mideawifi', 'debug', "Action setHorizontalSwing  = > OLD " . $oldVal . " ; NEW= > " . $newVal );
+                $eqLogic->sendCmd('setHorizontalSwing', $newVal);
             case 'setVerticalSwing':
             	log::add('mideawifi', 'debug', "Action setVerticalSwing");
             	$newVal = ($this->getCmd(null, "verticalswing")->getValue() == 1) ? 0 : 1;
