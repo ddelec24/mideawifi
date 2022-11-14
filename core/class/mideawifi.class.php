@@ -149,7 +149,7 @@ class mideawifi extends eqLogic {
 		$ip = 			$this->getConfiguration('ip');
 		$token = 		$this->getConfiguration('token');
 		$key = 			$this->getConfiguration('key');
-      	$model = 		$this->getConfiguration('model'); // 0xac = AC, 0xa1 = dehumidifier
+		$model = 		$this->getConfiguration('model'); // 0xac = AC, 0xa1 = dehumidifier
 		
 		$accountmail = 	trim(config::byKey('accountmail', 'mideawifi'));
 		$accountpass = 	trim(config::byKey('accountpass', 'mideawifi'));
@@ -165,105 +165,105 @@ class mideawifi extends eqLogic {
 			return; // can't update
 		}
 		
-      	log::add('mideawifi', 'debug', '[GET STATUS] ' . $data);
-      
+		log::add('mideawifi', 'debug', '[GET STATUS] ' . $data);
+	  
 		$json = json_decode($data);
-      		
+			
 		/*$excludeKeys = ["id","addr","s/n","model","ssid","name","supports","F","version"];*/
 		
-        $includeKeys = [
-            "online" =>     [
-                            "type" => "info", "subType" => "binary", "name" => "En ligne",
-                            "order" => 1, "visible" => 1, "historized" => 1,
-                            "display" => ["forceReturnLineBefore" => 0],
-                            "template" => ["dashboard" => "default"] 
-                            ],
-            "running" =>    [
-                            "type" => "info", "subType" => "binary", "name" => "Etat",
-                            "order" => 2, "visible" => 1, "historized" => 0,
-                            "display" => ["forceReturnLineBefore" => 0],
-                            "template" => ["dashboard" => "default"] 
-                            ],
-            "target" =>     [
-                            "type" => "info", "subType" => "string", "name" => "Température désirée",
-                            "order" => 3, "visible" => 0, "historized" => 0,
-                            "display" => ["forceReturnLineBefore" => 0],
-                            "template" => ["dashboard" => "default"], "unite" => "°C" ],
-            "indoor" =>     [
-                            "type" => "info", "subType" => "string", "name" => "Température intérieure",
-                            "order" => 4, "visible" => 1, "historized" => 1,
-                            "display" => ["forceReturnLineBefore" => 0],
-                            "template" => ["dashboard" => "default"], "unite" => "°C" ],
-            "outdoor" =>    [
-                            "type" => "info", "subType" => "string", "name" => "Température extérieure",
-                            "order" => 5, "visible" => 1, "historized" => 1,
-                            "display" => ["forceReturnLineBefore" => 0],
-                            "template" => ["dashboard" => "default"], "unite" => "°C" ],
-            "fan" =>        [
-                            "type" => "info", "subType" => "string", "name" => "Vitesse de ventilation",
-                            "order" => 6, "visible" => 0, "historized" => 0,
-                            "display" => ["forceReturnLineBefore" => 0],
-                            "template" => ["dashboard" => "default"] 
-                            ],
-            "mode" =>       [
-                            "type" => "info", "subType" => "string", "name" => "Mode",
-                            "order" => 7, "visible" => 0, "historized" => 0,
-                            "display" => ["forceReturnLineBefore" => 0],
-                            "template" => ["dashboard" => "default"] 
-                            ],
-            "horizontalswing" => [
-                            "type" => "info", "subType" => "binary", "name" => "Etat Swing Horizontal",
-                            "order" => 10, "visible" => 1, "historized" => 0,
-                            "display" => ["forceReturnLineBefore" => 0],
-                            "template" => ["dashboard" => "default"] 
-                            ],
-            "verticalswing" =>       [
-                            "type" => "info", "subType" => "binary", "name" => "Etat Swing Vertical",
-                            "order" => 11, "visible" => 1, "historized" => 0,
-                            "display" => ["forceReturnLineBefore" => 0],
-                            "template" => ["dashboard" => "default"] 
-                            ],
-            "turbo" =>   [
-                            "type" => "info", "subType" => "binary", "name" => "Etat Turbo",
-                            "order" => 12, "visible" => 1, "historized" => 0,
-                            "display" => ["forceReturnLineBefore" => 0],
-                            "template" => ["dashboard" => "default"] 
-                            ],
-            /*"purify" =>     [
-                            "type" => "info", "subType" => "binary", "name" => "Mode Purificateur",
-                            "order" => 8, "visible" => 1, "historized" => 1,
-                            "display" => ["forceReturnLineBefore" => 0],
-                            "template" => ["dashboard" => "default"] 
-                            ],*/
-            "error" =>      [
-                            "type" => "info", "subType" => "string", "name" => "Erreur",
-                            "order" => 888, "visible" => 0, "historized" => 1,
-                            "display" => ["forceReturnLineBefore" => 0],
-                            "template" => ["dashboard" => "default"] 
-                            ]
-        ];
-      //{'eco': 0, 'heat_8': 1, 'mode': 1, 'fan_swing': 1, 'electricity': 1, 'filter_reminder': 0, 'strong_fan': 1}
-      	$includeKeysSupport = [
-            /*"fan_swing" =>  [
-                            "type" => "info", "subType" => "binary", "name" => "Position de ventilation",
-                            "order" => 11, "visible" => 0, "historized" => 0,
-                            "display" => ["forceReturnLineBefore" => 0],
-                            "template" => ["dashboard" => "default"] 
-                            ],*/
-            /*"strong_fan" =>  [
-                            "type" => "info", "subType" => "binary", "name" => "Turbo",
-                            "order" => 9, "visible" => 1, "historized" => 0,
-                            "display" => ["forceReturnLineBefore" => 0],
-                            "template" => ["dashboard" => "default"] 
-                            ],*/
-            "eco" =>  [
-                            "type" => "info", "subType" => "binary", "name" => "Etat Eco",
-                            "order" => 8, "visible" => 1, "historized" => 0,
-                            "display" => ["forceReturnLineBefore" => 0],
-                            "template" => ["dashboard" => "default"] 
-                            ],
-          ];
-      
+		$includeKeys = [
+			"online" =>     [
+							"type" => "info", "subType" => "binary", "name" => "En ligne",
+							"order" => 1, "visible" => 1, "historized" => 0,
+							"display" => ["forceReturnLineBefore" => 0],
+							"template" => ["dashboard" => "default"] 
+							],
+			"running" =>    [
+							"type" => "info", "subType" => "binary", "name" => "Etat",
+							"order" => 880, "visible" => 0, "historized" => 0,
+							"display" => ["forceReturnLineBefore" => 0, "generic_type" => "ENERGY_STATE"],
+							"template" => ["dashboard" => "prise"] 
+							],
+			"target" =>     [
+							"type" => "info", "subType" => "string", "name" => "Température désirée",
+							"order" => 4, "visible" => 0, "historized" => 0,
+							"display" => ["forceReturnLineBefore" => 0],
+							"template" => ["dashboard" => "default"], "unite" => "°C" ],
+			"indoor" =>     [
+							"type" => "info", "subType" => "string", "name" => "Température intérieure",
+							"order" => 5, "visible" => 1, "historized" => 1,
+							"display" => ["forceReturnLineBefore" => 0],
+							"template" => ["dashboard" => "default"], "unite" => "°C" ],
+			"outdoor" =>    [
+							"type" => "info", "subType" => "string", "name" => "Température extérieure",
+							"order" => 6, "visible" => 1, "historized" => 1,
+							"display" => ["forceReturnLineBefore" => 0],
+							"template" => ["dashboard" => "default"], "unite" => "°C" ],
+			"fan" =>        [
+							"type" => "info", "subType" => "string", "name" => "Vitesse de ventilation",
+							"order" => 7, "visible" => 0, "historized" => 0,
+							"display" => ["forceReturnLineBefore" => 0],
+							"template" => ["dashboard" => "default"] 
+							],
+			"mode" =>       [
+							"type" => "info", "subType" => "string", "name" => "Mode",
+							"order" => 8, "visible" => 0, "historized" => 0,
+							"display" => ["forceReturnLineBefore" => 0],
+							"template" => ["dashboard" => "default"] 
+							],
+			"horizontalswing" => [
+							"type" => "info", "subType" => "binary", "name" => "Etat Swing Horizontal",
+							"order" => 10, "visible" => 1, "historized" => 0,
+							"display" => ["forceReturnLineBefore" => 0],
+							"template" => ["dashboard" => "default"] 
+							],
+			"verticalswing" =>       [
+							"type" => "info", "subType" => "binary", "name" => "Etat Swing Vertical",
+							"order" => 11, "visible" => 1, "historized" => 0,
+							"display" => ["forceReturnLineBefore" => 0],
+							"template" => ["dashboard" => "default"] 
+							],
+			"turbo" =>   [
+							"type" => "info", "subType" => "binary", "name" => "Etat Turbo",
+							"order" => 12, "visible" => 1, "historized" => 0,
+							"display" => ["forceReturnLineBefore" => 0],
+							"template" => ["dashboard" => "default"] 
+							],
+			/*"purify" =>     [
+							"type" => "info", "subType" => "binary", "name" => "Mode Purificateur",
+							"order" => 8, "visible" => 1, "historized" => 1,
+							"display" => ["forceReturnLineBefore" => 0],
+							"template" => ["dashboard" => "default"] 
+							],*/
+			"error" =>      [
+							"type" => "info", "subType" => "string", "name" => "Erreur",
+							"order" => 888, "visible" => 0, "historized" => 1,
+							"display" => ["forceReturnLineBefore" => 0],
+							"template" => ["dashboard" => "default"] 
+							]
+		];
+	  //{'eco': 0, 'heat_8': 1, 'mode': 1, 'fan_swing': 1, 'electricity': 1, 'filter_reminder': 0, 'strong_fan': 1}
+		$includeKeysSupport = [
+			/*"fan_swing" =>  [
+							"type" => "info", "subType" => "binary", "name" => "Position de ventilation",
+							"order" => 11, "visible" => 0, "historized" => 0,
+							"display" => ["forceReturnLineBefore" => 0],
+							"template" => ["dashboard" => "default"] 
+							],*/
+			/*"strong_fan" =>  [
+							"type" => "info", "subType" => "binary", "name" => "Turbo",
+							"order" => 9, "visible" => 1, "historized" => 0,
+							"display" => ["forceReturnLineBefore" => 0],
+							"template" => ["dashboard" => "default"] 
+							],*/
+			"eco" =>  [
+							"type" => "info", "subType" => "binary", "name" => "Etat Eco",
+							"order" => 9, "visible" => 1, "historized" => 0,
+							"display" => ["forceReturnLineBefore" => 0],
+							"template" => ["dashboard" => "default"] 
+							],
+		  ];
+	  
 		$re2 = '/(.+)(?:$|\n)/i';
 		preg_match_all($re2, $json->response, $matches);
 		if(!$matches) {
@@ -273,185 +273,192 @@ class mideawifi extends eqLogic {
 				if(strpos($match, '=') === false)
 							continue; // first line is long id and no equal, skip
 
-                $keyValue = explode("=", $match);
-                $key = trim($keyValue[0]);
-                $value = trim($keyValue[1]);
-              
-                if($key == "supports") {
-                  	$value = str_replace("'", '"', $value); //json needs double quotes to be decoded
-                  	$jsonSupportedValue = json_decode($value, true);
-                    foreach($jsonSupportedValue as $supportedKey => $supportedVal) {
-                      if(array_key_exists($supportedKey, $includeKeysSupport)) {
-                          // create cmd INFO
-                          $cmdLabel = $includeKeysSupport[$supportedKey];
-                          if($bCreateCmd)
-                          	self::_saveEqLogic($supportedKey, $cmdLabel);
-                        
-                          $this->checkAndUpdateCmd($supportedKey, $supportedVal); // update with current value
+				$keyValue = explode("=", $match);
+				$key = trim($keyValue[0]);
+				$value = trim($keyValue[1]);
+			  
+				if($key == "supports") {
+					$value = str_replace("'", '"', $value); //json needs double quotes to be decoded
+					$jsonSupportedValue = json_decode($value, true);
+					foreach($jsonSupportedValue as $supportedKey => $supportedVal) {
+					  if(array_key_exists($supportedKey, $includeKeysSupport)) {
+						  // create cmd INFO
+						  $cmdLabel = $includeKeysSupport[$supportedKey];
+						  if($bCreateCmd)
+							self::_saveEqLogic($supportedKey, $cmdLabel);
+						
+						  $this->checkAndUpdateCmd($supportedKey, $supportedVal); // update with current value
 
-                      } //key exists
-                    }
-                  	continue;
-                }
-              
-             	if(array_key_exists($key, $includeKeys)) {
-                  	// create cmd INFO
-                  	$cmdLabel = $includeKeys[$key];
-                  	if($bCreateCmd)
-                    	self::_saveEqLogic($key, $cmdLabel);
-                  
-                  	$this->checkAndUpdateCmd($key, $value); // update with current value
+					  } //key exists
+					}
+					continue;
+				}
+			  
+				if(array_key_exists($key, $includeKeys)) {
+					// create cmd INFO
+					$cmdLabel = $includeKeys[$key];
+					if($bCreateCmd)
+						self::_saveEqLogic($key, $cmdLabel);
+				  
+					$this->checkAndUpdateCmd($key, $value); // update with current value
 
-                } //key exists
+				} //key exists
 
-            } // foreach retrivied cmd
+			} // foreach retrivied cmd
 		} // matches
-      
-      	// create cmd ACTION
+	  
+		// create cmd ACTION
 		$cmdActions0xac = [
-          "on" =>				  [
-                                  "type" => "action", "subType" => "other", "name" => "Allumer",
-                                  "order" => 50, "visible" => 1, "historized" => 0,
-                                  "display" => ["generic_type" => "ENERGY_ON", "forceReturnLineBefore" => 0],
-                                  "template" => ["dashboard" => "default"] 
-                                  ],
-          "off" =>				  [
-                                  "type" => "action", "subType" => "other", "name" => "Eteindre",
-                                  "order" => 51, "visible" => 1, "historized" => 0,
-                                  "display" => ["generic_type" => "ENERGY_OFF", "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 1],
-                                  "template" => ["dashboard" => "default"] 
-                                  ],
-          "setTemperature" =>	  [
-                                  "type" => "action", "subType" => "other", "name" => "Température de consigne",
-                                  "order" => 52, "visible" => 1, "historized" => 0,
-                                  "display" => ["forceReturnLineBefore" => 0, "forceReturnLineAfter" => 1],
-            					  "value" => $this->getCmd(null, "target")->getId(),
-            					  "unite" => "°C",
-            					  "configuration" => ["minValue" => 16, "maxValue" => 30],
-                                  "template" => ["dashboard" => "mideawifi::setTemperature", "mobile" => "mideawifi::setTemperature"] 
-                                  ],
-          /*
-                  auto = 1
-                  cool = 2
-                  dry = 3
-                  heat = 4
-                  fan_only = 5*
-          */
-          "setMode" => 			  [
-                                  "type" => "action", "subType" => "select", "name" => "Mode Opérationnel",
-                                  "order" => 53, "visible" => 1, "historized" => 0,
-                                  "display" => ["forceReturnLineBefore" => 0],
-                                  "configuration" => ["listValue" => "1|Automatique;2|Climatiseur;3|Déshumidificateur;4|Chauffage;5|Ventilation seulement"],
-                                  "value" => $this->getCmd(null, "mode")->getId(),
-                                  "template" => ["dashboard" => "default"] 
-                                  ],
-          /*
-                  Auto = 102
-                  Full = 100
-                  High = 80
-                  Medium = 60
-                  Low = 40
-                  Silent = 20
-          */
-          "setFanSpeed" =>		  [
-                                  "type" => "action", "subType" => "select", "name" => "Vitesse ventilation",
-                                  "order" => 54, "visible" => 1, "historized" => 0,
-                                  "display" => ["forceReturnLineBefore" => 1, "forceReturnLineAfter" => 1],
-                                  "configuration" => ["listValue" => "102|Automatique;80|Rapide;60|Normal;40|Lent;20|Silencieux"],
-                                  "value" => $this->getCmd(null, "fan")->getId(),
-                                  "template" => ["dashboard" => "default"] 
-                                  ],
-          "setHorizontalSwing" => [
-                                  "type" => "action", "subType" => "other", "name" => "Horizontal Swing",
-                                  "order" => 55, "visible" => 1, "historized" => 0,
-                                  "display" => ["forceReturnLineBefore" => 1, "forceReturnLineAfter" => 0],
-                                  "value" => $this->getCmd(null, "horizontalswing")->getId(),
-                                  "template" => ["dashboard" => "default"] 
-                                  ],
-          "setVerticalSwing" =>	  [
-                                  "type" => "action", "subType" => "other", "name" => "Vertical Swing",
-                                  "order" => 56, "visible" => 1, "historized" => 0,
-                                  "display" => ["forceReturnLineBefore" => 0, "forceReturnLineAfter" => 0],
-                                  "value" => $this->getCmd(null, "verticalswing")->getId(),
-                                  "template" => ["dashboard" => "default"] 
-                                  ],
-          "setTurbo" =>	  [
-                                  "type" => "action", "subType" => "other", "name" => "Turbo",
-                                  "order" => 57, "visible" => 1, "historized" => 0,
-                                  "display" => ["forceReturnLineBefore" => 0, "forceReturnLineAfter" => 0],
-                                  "value" => $this->getCmd(null, "turbo")->getId(),
-                                  "template" => ["dashboard" => "default"] 
-                                  ],
+		  "on" =>				  [
+								  "type" => "action", "subType" => "other", "name" => "Allumer",
+								  "order" => 2, "visible" => 1, "historized" => 0,
+								  "display" => ["generic_type" => "ENERGY_ON", "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 1],
+								  "value" => $this->getCmd(null, "running")->getId(),
+								  "forceLogicalId" => "running",
+								  "template" => ["dashboard" => "prise", "mobile" => "prise"] 
+								  ],
+		  "off" =>				  [
+								  "type" => "action", "subType" => "other", "name" => "Eteindre",
+								  "order" => 3, "visible" => 1, "historized" => 0,
+								  "display" => ["generic_type" => "ENERGY_OFF", "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 1],
+								  "value" => $this->getCmd(null, "running")->getId(),
+								  "forceLogicalId" => "running",
+								  "template" => ["dashboard" => "prise", "mobile" => "prise"] 
+								  ],
+		  "setTemperature" =>	  [
+								  "type" => "action", "subType" => "other", "name" => "Température de consigne",
+								  "order" => 52, "visible" => 1, "historized" => 0,
+								  "display" => ["forceReturnLineBefore" => 0, "forceReturnLineAfter" => 1],
+								  "value" => $this->getCmd(null, "target")->getId(),
+								  "unite" => "°C",
+								  "configuration" => ["minValue" => 16, "maxValue" => 30],
+								  "template" => ["dashboard" => "mideawifi::setTemperature", "mobile" => "mideawifi::setTemperature"] 
+								  ],
+		  /*
+				  auto = 1
+				  cool = 2
+				  dry = 3
+				  heat = 4
+				  fan_only = 5*
+		  */
+		  "setMode" => 			  [
+								  "type" => "action", "subType" => "select", "name" => "Mode Opérationnel",
+								  "order" => 53, "visible" => 1, "historized" => 0,
+								  "display" => ["forceReturnLineBefore" => 0],
+								  "configuration" => ["listValue" => "1|Automatique;2|Climatiseur;3|Déshumidificateur;4|Chauffage;5|Ventilation seulement"],
+								  "value" => $this->getCmd(null, "mode")->getId(),
+								  "template" => ["dashboard" => "default"] 
+								  ],
+		  /*
+				  Auto = 102
+				  Full = 100
+				  High = 80
+				  Medium = 60
+				  Low = 40
+				  Silent = 20
+		  */
+		  "setFanSpeed" =>		  [
+								  "type" => "action", "subType" => "select", "name" => "Vitesse ventilation",
+								  "order" => 54, "visible" => 1, "historized" => 0,
+								  "display" => ["forceReturnLineBefore" => 1, "forceReturnLineAfter" => 1],
+								  "configuration" => ["listValue" => "102|Automatique;80|Rapide;60|Normal;40|Lent;20|Silencieux"],
+								  "value" => $this->getCmd(null, "fan")->getId(),
+								  "template" => ["dashboard" => "default"] 
+								  ],
+		  "setHorizontalSwing" => [
+								  "type" => "action", "subType" => "other", "name" => "Horizontal Swing",
+								  "order" => 55, "visible" => 1, "historized" => 0,
+								  "display" => ["forceReturnLineBefore" => 1, "forceReturnLineAfter" => 0],
+								  "value" => $this->getCmd(null, "horizontalswing")->getId(),
+								  "template" => ["dashboard" => "default"] 
+								  ],
+		  "setVerticalSwing" =>	  [
+								  "type" => "action", "subType" => "other", "name" => "Vertical Swing",
+								  "order" => 56, "visible" => 1, "historized" => 0,
+								  "display" => ["forceReturnLineBefore" => 0, "forceReturnLineAfter" => 0],
+								  "value" => $this->getCmd(null, "verticalswing")->getId(),
+								  "template" => ["dashboard" => "default"] 
+								  ],
+		  "setTurbo" =>	  		[
+								  "type" => "action", "subType" => "other", "name" => "Turbo",
+								  "order" => 57, "visible" => 1, "historized" => 0,
+								  "display" => ["forceReturnLineBefore" => 0, "forceReturnLineAfter" => 0],
+								  "value" => $this->getCmd(null, "turbo")->getId(),
+								  "template" => ["dashboard" => "default"] 
+								  ],
 		];
-      
-      	if($bCreateCmd) {
-          if($model == "0xac") {
-              foreach($cmdActions0xac as $keyAction => $action) {
-                  self::_saveEqLogic($keyAction, $action);
-              }
-          } else if ($model == "0xa1") {
-            foreach($cmdActions0xa1 as $keyAction => $action) {
-              self::_saveEqLogic($keyAction, $action);
-            }
-          }
-          
-          // create refresh action
-          $refresh = $this->getCmd(null, 'refresh');
-          if (!is_object($refresh)) {
-              $refresh = new mideawifiCmd();
-              $refresh->setName(__('Rafraichir', __FILE__));
-          }
-          $refresh->setEqLogic_id($this->getId());
-          $refresh->setOrder(999);
-          $refresh->setLogicalId('refresh');
-          $refresh->setType('action');
-          $refresh->setSubType('other');
-          $refresh->save();
-        } // create cmds
-      
+	  
+		if($bCreateCmd) {
+		  if($model == "0xac") {
+			  foreach($cmdActions0xac as $keyAction => $action) {
+				  self::_saveEqLogic($keyAction, $action);
+			  }
+		  } else if ($model == "0xa1") {
+			foreach($cmdActions0xa1 as $keyAction => $action) {
+			  self::_saveEqLogic($keyAction, $action);
+			}
+		  }
+		  
+		  // create refresh action
+		  $refresh = $this->getCmd(null, 'refresh');
+		  if (!is_object($refresh)) {
+			  $refresh = new mideawifiCmd();
+			  $refresh->setName(__('Rafraichir', __FILE__));
+		  }
+		  $refresh->setEqLogic_id($this->getId());
+		  $refresh->setOrder(999);
+		  $refresh->setLogicalId('refresh');
+		  $refresh->setType('action');
+		  $refresh->setSubType('other');
+		  $refresh->save();
+		} // create cmds
+	  
 
-      
+	  
 	} //createCmd()
 	
   
-  	private function _saveEqLogic($key, $cmdLabel) {
+	private function _saveEqLogic($key, $cmdLabel) {
+					if(isset($cmdLabel["forceLogicalId"]))
+					  $key = $cmdLabel["forceLogicalId"];
+	  
 					$newCmd = $this->getCmd(null, $key);
-      
-                    if (!is_object($newCmd)) {
-                        $newCmd = new mideawifiCmd();
-                        $newCmd->setName(__($cmdLabel["name"], __FILE__));
-                    }
-                  	$newCmd->setLogicalId($key);
-                  	$newCmd->setEqLogic_id($this->getId());
-                   	$newCmd->setType($cmdLabel["type"]);
-                  	$newCmd->setSubType($cmdLabel["subType"]);
-                    $newCmd->setOrder($cmdLabel["order"]);
-                    $newCmd->setIsVisible($cmdLabel["visible"]);
-                    $newCmd->setIsHistorized($cmdLabel["historized"]);
-      
-                    if(array_key_exists("template", $cmdLabel)) {
-                    	foreach($cmdLabel["template"] as $templateKey => $templateVal) {
-                  			$newCmd->setTemplate($templateKey, $templateVal);
-                        }
-                    }
-                  	if(array_key_exists("display", $cmdLabel)) {
-                    	foreach($cmdLabel["display"] as $displayKey => $displayVal) {
-                                $newCmd->setDisplay($displayKey, $displayVal);
-                        }
-                    }
-                    if(array_key_exists("configuration", $cmdLabel)) {
-                    	foreach($cmdLabel["configuration"] as $configKey => $configVal) {
-                  			$newCmd->setConfiguration($configKey, $configVal);
-                        }
-                    }
-      
-                  	if(isset($cmdLabel["unite"]))
-                      $newCmd->setUnite($cmdLabel['unite']);
-                  	if(isset($cmdLabel["value"]))
-                      $newCmd->setValue($cmdLabel['value']);
-                  	
-                  	$newCmd->save();
-    } // _saveEqLogic
+	  
+					if (!is_object($newCmd)) {
+						$newCmd = new mideawifiCmd();
+						$newCmd->setName(__($cmdLabel["name"], __FILE__));
+					}
+					$newCmd->setLogicalId($key);
+					$newCmd->setEqLogic_id($this->getId());
+					$newCmd->setType($cmdLabel["type"]);
+					$newCmd->setSubType($cmdLabel["subType"]);
+					$newCmd->setOrder($cmdLabel["order"]);
+					$newCmd->setIsVisible($cmdLabel["visible"]);
+					$newCmd->setIsHistorized($cmdLabel["historized"]);
+	  
+					if(array_key_exists("template", $cmdLabel)) {
+						foreach($cmdLabel["template"] as $templateKey => $templateVal) {
+							$newCmd->setTemplate($templateKey, $templateVal);
+						}
+					}
+					if(array_key_exists("display", $cmdLabel)) {
+						foreach($cmdLabel["display"] as $displayKey => $displayVal) {
+								$newCmd->setDisplay($displayKey, $displayVal);
+						}
+					}
+					if(array_key_exists("configuration", $cmdLabel)) {
+						foreach($cmdLabel["configuration"] as $configKey => $configVal) {
+							$newCmd->setConfiguration($configKey, $configVal);
+						}
+					}
+	  
+					if(isset($cmdLabel["unite"]))
+					  $newCmd->setUnite($cmdLabel['unite']);
+					if(isset($cmdLabel["value"]))
+					  $newCmd->setValue($cmdLabel['value']);
+					
+					$newCmd->save();
+	} // _saveEqLogic
   
   public function sendCmd($cmd, $val = "") {
 		// create commands with appliance status informations
@@ -459,100 +466,100 @@ class mideawifi extends eqLogic {
 		$ip = 			$this->getConfiguration('ip');
 		$token = 		$this->getConfiguration('token');
 		$key = 			$this->getConfiguration('key');
-      	$model = 		$this->getConfiguration('model'); // 0xac = AC, 0xa1 = dehumidifier
+		$model = 		$this->getConfiguration('model'); // 0xac = AC, 0xa1 = dehumidifier
 		
 		$accountmail = 	trim(config::byKey('accountmail', 'mideawifi'));
 		$accountpass = 	trim(config::byKey('accountpass', 'mideawifi'));
 		
-    	$cmdLabel = "";
-    	$cmdValue = "";
-    	switch ($cmd) {
-          case "on":
-            	$cmdLabel = "running";
-            	$cmdValue = "1";
-            	log::add('mideawifi', 'debug', "running 1");
-            	break;
-          case "off":
-            	$cmdLabel = "running";
-            	$cmdValue = "0";
-            	log::add('mideawifi', 'debug', "running 0");
-            	break;
-          case "setTemperature":
-            	$cmdLabel = "target-temperature";
-            	$cmdValue = strval(floor($val * 2) / 2); // 0.5 floor
-            	self::createAndUpdateCmd(false); // update datas before sending new vals
+		$cmdLabel = "";
+		$cmdValue = "";
+		switch ($cmd) {
+		  case "on":
+				$cmdLabel = "running";
+				$cmdValue = "1";
+				log::add('mideawifi', 'debug', "running 1");
+				break;
+		  case "off":
+				$cmdLabel = "running";
+				$cmdValue = "0";
+				log::add('mideawifi', 'debug', "running 0");
+				break;
+		  case "setTemperature":
+				$cmdLabel = "target-temperature";
+				$cmdValue = strval(floor($val * 2) / 2); // 0.5 floor
+				self::createAndUpdateCmd(false); // update datas before sending new vals
 				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
-            	break;
-          case "setMode":
-            	$cmdLabel = "mode";
-            	$cmdValue = $val; 
-            	self::createAndUpdateCmd(false); // update datas before sending new vals
+				break;
+		  case "setMode":
+				$cmdLabel = "mode";
+				$cmdValue = $val; 
+				self::createAndUpdateCmd(false); // update datas before sending new vals
 				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
-            	break;
-          case "setFanSpeed":
-            	$cmdLabel = "fan-speed";
-            	$cmdValue = $val; 
-            	self::createAndUpdateCmd(false); // update datas before sending new vals
+				break;
+		  case "setFanSpeed":
+				$cmdLabel = "fan-speed";
+				$cmdValue = $val; 
+				self::createAndUpdateCmd(false); // update datas before sending new vals
 				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
-            	break;
-          case "setHorizontalSwing":
-            	$cmdLabel = "horizontal-swing";
-            	$cmdValue = (string)$val;
-            	self::createAndUpdateCmd(false); // update datas before sending new vals
+				break;
+		  case "setHorizontalSwing":
+				$cmdLabel = "horizontal-swing";
+				$cmdValue = (string)$val;
+				self::createAndUpdateCmd(false); // update datas before sending new vals
 				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
-            	break;
-          case "setVerticalSwing":
-            	$cmdLabel = "vertical-swing";
-            	$cmdValue = (string)$val; 
-            	self::createAndUpdateCmd(false); // update datas before sending new vals
+				break;
+		  case "setVerticalSwing":
+				$cmdLabel = "vertical-swing";
+				$cmdValue = (string)$val; 
+				self::createAndUpdateCmd(false); // update datas before sending new vals
 				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
-            	break;
-          case "setTurbo":
-            	$cmdLabel = "turbo";
-            	$cmdValue = (string)$val;
-            	self::createAndUpdateCmd(false); // update datas before sending new vals
+				break;
+		  case "setTurbo":
+				$cmdLabel = "turbo";
+				$cmdValue = (string)$val;
+				self::createAndUpdateCmd(false); // update datas before sending new vals
 				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
-            	break;
-          default:
-              throw new Error('This should not append!');
-              log::add('mideawifi', 'warn', 'Error while executing cmd ' . $this->getLogicalId());
-              return;
-              //break;
-        }
-    	
-    	if($cmdLabel == "" || $cmdValue == "")
-          return;
-    
-    	$command = "--$cmdLabel $cmdValue ";
-    	log::add('mideawifi', 'debug', "commande à envoyer $command");
-    	// when set a new lower temp target, a bug occurs. forcing eco-mode state fix that
-    	$additionalParams = "";
-    	if($cmd == "setTemperature") {
-          	$currentMode = $this->getCmd(null, "mode");
-          	if($currentMode == 2) { // eco mode exists only in cooling mode
-            	$cmdEco = $this->getCmd(null, "eco");
-              	$isEco = $cmdEco->execCmd();
-              	$additionalParams = ($isEco) ? "--eco-mode 1" : "--eco-mode 0"; // @TODO a vérifier si la valeur "eco" récupérée dans les supports correspond bien au mode de clim éco
-            } else {
-            	$additionalParams = "--eco-mode 0";
-            }
-        }
-    
+				break;
+		  default:
+			  throw new Error('This should not append!');
+			  log::add('mideawifi', 'warn', 'Error while executing cmd ' . $this->getLogicalId());
+			  return;
+			  //break;
+		}
+		
+		if($cmdLabel == "" || $cmdValue == "")
+		  return;
+	
+		$command = "--$cmdLabel $cmdValue ";
+		log::add('mideawifi', 'debug', "commande à envoyer $command");
+		// when set a new lower temp target, a bug occurs. forcing eco-mode state fix that
+		$additionalParams = "";
+		if($cmd == "setTemperature") {
+			$currentMode = $this->getCmd(null, "mode");
+			if($currentMode == 2) { // eco mode exists only in cooling mode
+				$cmdEco = $this->getCmd(null, "eco");
+				$isEco = $cmdEco->execCmd();
+				$additionalParams = ($isEco) ? "--eco-mode 1" : "--eco-mode 0"; // @TODO a vérifier si la valeur "eco" récupérée dans les supports correspond bien au mode de clim éco
+			} else {
+				$additionalParams = "--eco-mode 0";
+			}
+		}
+	
 		if(!empty($ip) && !empty($token) && !empty($key)) {
 			log::add('mideawifi', 'debug', '[ENDPOINT] /set_appliance_attribute');
-          	log::add('mideawifi', 'debug', 'midea-beautiful-air-cli set --ip ' . $ip . ' --token ' . $token . ' --key ' . $key . ' --' . $cmdLabel . ' ' . $cmdValue . $additionalParams);
+			log::add('mideawifi', 'debug', 'midea-beautiful-air-cli set --ip ' . $ip . ' --token ' . $token . ' --key ' . $key . ' --' . $cmdLabel . ' ' . $cmdValue . $additionalParams);
 			$data = curlMideawifiDocker("/set_appliance_attribute", array("ipaddress" => $ip, "token" => $token, "key" => $key, "commands" => $command . $additionalParams));
-          	log::add('mideawifi', 'debug', "Data => " . $data);
+			log::add('mideawifi', 'debug', "Data => " . $data);
 		} else if(!empty($id) && !empty($accountmail) && !empty($accountpass)) {
 			log::add('mideawifi', 'debug', '[ENDPOINT] /set_appliance_attribute_with_account');
-          	log::add('mideawifi', 'debug', 'midea-beautiful-air-cli set --id ' . $id . ' --account ' . $accountmail . ' --password ' . $accountpass . ' --' . $cmdLabel . ' ' . $cmdValue . ' --cloud');
+			log::add('mideawifi', 'debug', 'midea-beautiful-air-cli set --id ' . $id . ' --account ' . $accountmail . ' --password ' . $accountpass . ' --' . $cmdLabel . ' ' . $cmdValue . ' --cloud');
 			$data = curlMideawifiDocker("/set_appliance_attribute_with_account", array("applianceid" => $id, "accountmail" => $accountmail, "accountpass" => $accountpass, "commands" => $command . $additionalParams));
-          	log::add('mideawifi', 'debug', "Data => " . $data);
+			log::add('mideawifi', 'debug', "Data => " . $data);
 		} else {
 			log::add('mideawifi', 'debug', "Can't update $id, missing:<br/> Either => credentials + appliance id <br/> Either => token + key + ip");
 			return; // can't update
 		}
-    
+	
   } // sendCmd
 }
 
@@ -561,63 +568,63 @@ class mideawifiCmd extends cmd {
 	// Exécution d'une commande
 	public function execute($_options = array()) {
 
-      	$eqLogic = $this->getEqLogic(); // Récupération de l’eqlogic
+		$eqLogic = $this->getEqLogic(); // Récupération de l’eqlogic
 		log::add("mideawifi", "debug", "LogicalId action => " . $this->getLogicalId());
 		Log::add('mideawifi', 'debug', '$_options[] traité: ' . json_encode($_options));
-      
+	  
 		switch ($this->getLogicalId()) {
 			case 'refresh': 
 				$eqLogic->createAndUpdateCmd(false);
 				break;
-          	case 'on':
-            	log::add('mideawifi', 'debug', "Action ON");
-            	$eqLogic->sendCmd('on');
-            	break;
-          	case 'off':
-            	log::add('mideawifi', 'debug', "Action OFF");
-            	$eqLogic->sendCmd('off');
-            	break;
-          case 'setTemperature':
-            	log::add('mideawifi', 'debug', "Action setTemperature");
-            	$eqLogic->sendCmd('setTemperature', isset($_options['text']) ? $_options['text'] : $_options['slider']); // scenario compatibility
-            	break;
-            case 'setMode':
-            	log::add('mideawifi', 'debug', "Action setMode");
-            	$eqLogic->sendCmd('setMode', isset($_options['select']) ? $_options['select'] : $_options['slider']); // scenario compatibility
-            	break;
-            case 'setFanSpeed':
-            	log::add('mideawifi', 'debug', "Action setFanSpeed");
-            	$eqLogic->sendCmd('setFanSpeed', isset($_options['select']) ? $_options['select'] : $_options['slider']); // scenario compatibility
-            	break;
-            case 'setHorizontalSwing':
-                log::add('mideawifi', 'debug', "Action setHorizontalSwing");
-                $hswing = $eqLogic->getCmd(null, "horizontalswing");
-                $oldVal = $hswing->execCmd();
-                $newVal = ($oldVal) ? 0 : 1;
-                $eqLogic->sendCmd('setHorizontalSwing', $newVal);
+			case 'on':
+				log::add('mideawifi', 'debug', "Action ON");
+				$eqLogic->sendCmd('on');
+				break;
+			case 'off':
+				log::add('mideawifi', 'debug', "Action OFF");
+				$eqLogic->sendCmd('off');
+				break;
+		  case 'setTemperature':
+				log::add('mideawifi', 'debug', "Action setTemperature");
+				$eqLogic->sendCmd('setTemperature', isset($_options['text']) ? $_options['text'] : $_options['slider']); // scenario compatibility
+				break;
+			case 'setMode':
+				log::add('mideawifi', 'debug', "Action setMode");
+				$eqLogic->sendCmd('setMode', isset($_options['select']) ? $_options['select'] : $_options['slider']); // scenario compatibility
+				break;
+			case 'setFanSpeed':
+				log::add('mideawifi', 'debug', "Action setFanSpeed");
+				$eqLogic->sendCmd('setFanSpeed', isset($_options['select']) ? $_options['select'] : $_options['slider']); // scenario compatibility
+				break;
+			case 'setHorizontalSwing':
+				log::add('mideawifi', 'debug', "Action setHorizontalSwing");
+				$hswing = $eqLogic->getCmd(null, "horizontalswing");
+				$oldVal = $hswing->execCmd();
+				$newVal = ($oldVal) ? 0 : 1;
+				$eqLogic->sendCmd('setHorizontalSwing', $newVal);
 		break;
-            case 'setVerticalSwing':
-            	log::add('mideawifi', 'debug', "Action setVerticalSwing");
-            	$hswing = $eqLogic->getCmd(null, "verticalswing");
-            	$oldVal = $hswing->execCmd();
-                $newVal = ($oldVal) ? 0 : 1;
-            	$eqLogic->sendCmd('setVerticalSwing', $newVal);
-            	break;
-            case 'setTurbo':
-            	log::add('mideawifi', 'debug', "Action setTurbo");
-            	$hswing = $eqLogic->getCmd(null, "turbo");
-            	$oldVal = $hswing->execCmd();
-                $newVal = ($oldVal) ? 0 : 1;
-            	$eqLogic->sendCmd('setTurbo', $newVal);
-            	break;
+			case 'setVerticalSwing':
+				log::add('mideawifi', 'debug', "Action setVerticalSwing");
+				$hswing = $eqLogic->getCmd(null, "verticalswing");
+				$oldVal = $hswing->execCmd();
+				$newVal = ($oldVal) ? 0 : 1;
+				$eqLogic->sendCmd('setVerticalSwing', $newVal);
+				break;
+			case 'setTurbo':
+				log::add('mideawifi', 'debug', "Action setTurbo");
+				$hswing = $eqLogic->getCmd(null, "turbo");
+				$oldVal = $hswing->execCmd();
+				$newVal = ($oldVal) ? 0 : 1;
+				$eqLogic->sendCmd('setTurbo', $newVal);
+				break;
 			default:
-              throw new Error('This should not append!');
-              log::add('mideawifi', 'warn', 'Error while executing cmd ' . $this->getLogicalId());
-              break;
-        }
-      
-      	return;
-            
+			  throw new Error('This should not append!');
+			  log::add('mideawifi', 'warn', 'Error while executing cmd ' . $this->getLogicalId());
+			  break;
+		}
+
+		return;
+			
 	}
 
 	/*     * **********************Getteur Setteur*************************** */
