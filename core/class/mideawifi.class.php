@@ -380,7 +380,7 @@ class mideawifi extends eqLogic {
 								  "template" => ["dashboard" => "default"] 
 								  ],
 		  "setTurbo" =>	  		[
-								  "type" => "action", "subType" => "other", "name" => "Turbo",
+								  "type" => "action", "subType" => "other", "name" => "Set Turbo",
 								  "order" => 57, "visible" => 1, "historized" => 0,
 								  "display" => ["forceReturnLineBefore" => 0, "forceReturnLineAfter" => 0],
 								  "value" => $this->getCmd(null, "turbo")->getId(),
