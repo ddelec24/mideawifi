@@ -484,6 +484,11 @@ class mideawifi extends eqLogic {
 				$cmdValue = "0";
 				log::add('mideawifi', 'debug', "running 0");
 				break;
+		  case "running":
+				$cmdLabel = "running";
+				$cmdValue = (string)$val;
+				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
+				break;
 		  case "setTemperature":
 				$cmdLabel = "target-temperature";
 				$cmdValue = strval(floor($val * 2) / 2); // 0.5 floor
@@ -584,7 +589,12 @@ class mideawifiCmd extends cmd {
 				log::add('mideawifi', 'debug', "Action OFF");
 				$eqLogic->sendCmd('off');
 				break;
-		  case 'setTemperature':
+			case 'running':
+				log::add('mideawifi', 'debug', "Action running");
+				$oldVal = $eqLogic->getCmd(null, "running")->execCmd();
+				$newVal = ($oldVal) ? 0 : 1;
+				$eqLogic->sendCmd('running', $newVal);
+		  	case 'setTemperature':
 				log::add('mideawifi', 'debug', "Action setTemperature");
 				$eqLogic->sendCmd('setTemperature', isset($_options['text']) ? $_options['text'] : $_options['slider']); // scenario compatibility
 				break;
