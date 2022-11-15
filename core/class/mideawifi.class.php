@@ -576,7 +576,7 @@ class mideawifi extends eqLogic {
 			log::add('mideawifi', 'debug', "Can't update $id, missing:<br/> Either => credentials + appliance id <br/> Either => token + key + ip");
 			return; // can't update
 		}
-	
+	$this->refreshWidget();
   } // sendCmd
 }
 
