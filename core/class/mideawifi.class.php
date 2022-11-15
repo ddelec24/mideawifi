@@ -22,7 +22,21 @@ require_once dirname(__FILE__) . '/../php/mideawifi.inc.php';
 
 class mideawifi extends eqLogic {
 	/*     * *************************Attributs****************************** */
-
+  	public static function templateWidget() {
+          $return = array('action' => array('other' => array()));
+          $return['action']['other']['boutonOnOff'] = array(
+              'template' => 'tmplicon',
+              'display' => array(
+                  '#icon#' => '<i class=\'icon jeedom-prise\'></i>',
+              ),
+              'replace' => array(
+                  '#_icon_on_#' => '<i class=\'icon jeedom-prise\'></i>',
+                  '#_icon_off_#' => '<i class=\'icon fas fa-times\'></i>',
+                  '#_time_widget_#' => '0'
+              )
+          );
+          return $return;
+        }
 	/*
 	* Permet de définir les possibilités de personnalisation du widget (en cas d'utilisation de la fonction 'toHtml' par exemple)
 	* Tableau multidimensionnel - exemple: array('custom' => true, 'custom::layout' => false)
@@ -181,8 +195,10 @@ class mideawifi extends eqLogic {
 			"running" =>    [
 							"type" => "info", "subType" => "binary", "name" => "Etat",
 							"order" => 880, "visible" => 0, "historized" => 0,
-							"display" => ["forceReturnLineBefore" => 0, "generic_type" => "ENERGY_STATE"],
-							"template" => ["dashboard" => "prise"] 
+							"display" => ["forceReturnLineBefore" => 0],
+							"generic_type" => "ENERGY_STATE",
+							"configuration" => ['repeatEventManagement' => 'never'],
+							"template" => ["dashboard" => "default"] 
 							],
 			"target" =>     [
 							"type" => "info", "subType" => "string", "name" => "Température désirée",
@@ -309,21 +325,21 @@ class mideawifi extends eqLogic {
 	  
 		// create cmd ACTION
 		$cmdActions0xac = [
-		  "on" =>				  [
-								  "type" => "action", "subType" => "other", "name" => "Allumer",
+		  "marche" =>				  [
+								  "type" => "action", "subType" => "other", "name" => "Marche",
 								  "order" => 2, "visible" => 1, "historized" => 0,
-								  "display" => ["generic_type" => "ENERGY_ON", "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 1],
+								  "display" => ["forceReturnLineBefore" => 0, "forceReturnLineAfter" => 1],
 								  "value" => $this->getCmd(null, "running")->getId(),
-								  "forceLogicalId" => "running",
-								  "template" => ["dashboard" => "prise", "mobile" => "prise"] 
+								  "generic_type" => "ENERGY_ON",
+								  "template" => ["dashboard" => "mideawifi::boutonOnOff", "mobile" => "mideawifi::boutonOnOff"] 
 								  ],
-		  "off" =>				  [
-								  "type" => "action", "subType" => "other", "name" => "Eteindre",
+		  "arret" =>				  [
+								  "type" => "action", "subType" => "other", "name" => "Arret",
 								  "order" => 3, "visible" => 1, "historized" => 0,
-								  "display" => ["generic_type" => "ENERGY_OFF", "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 1],
+								  "display" => [ "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 1],
 								  "value" => $this->getCmd(null, "running")->getId(),
-								  "forceLogicalId" => "running",
-								  "template" => ["dashboard" => "prise", "mobile" => "prise"] 
+								  "generic_type" => "ENERGY_OFF",
+								  "template" => ["dashboard" => "mideawifi::boutonOnOff", "mobile" => "mideawifi::boutonOnOff"] 
 								  ],
 		  "setTemperature" =>	  [
 								  "type" => "action", "subType" => "other", "name" => "Température de consigne",
@@ -419,9 +435,6 @@ class mideawifi extends eqLogic {
 	
   
 	private function _saveEqLogic($key, $cmdLabel) {
-					if(isset($cmdLabel["forceLogicalId"]))
-					  $key = $cmdLabel["forceLogicalId"];
-	  
 					$newCmd = $this->getCmd(null, $key);
 	  
 					if (!is_object($newCmd)) {
@@ -454,6 +467,8 @@ class mideawifi extends eqLogic {
 	  
 					if(isset($cmdLabel["unite"]))
 					  $newCmd->setUnite($cmdLabel['unite']);
+					if(isset($cmdLabel["generic_type"]))
+					  $newCmd->setGeneric_type($cmdLabel['generic_type']);
 					if(isset($cmdLabel["value"]))
 					  $newCmd->setValue($cmdLabel['value']);
 					
@@ -474,20 +489,17 @@ class mideawifi extends eqLogic {
 		$cmdLabel = "";
 		$cmdValue = "";
 		switch ($cmd) {
-		  case "on":
+		  case "marche":
 				$cmdLabel = "running";
 				$cmdValue = "1";
+				$this->checkAndUpdateCmd('boutonOnOff', 1);
 				log::add('mideawifi', 'debug', "running 1");
 				break;
-		  case "off":
+		  case "arret":
 				$cmdLabel = "running";
 				$cmdValue = "0";
+				$this->checkAndUpdateCmd('boutonOnOff', 0);
 				log::add('mideawifi', 'debug', "running 0");
-				break;
-		  case "running":
-				$cmdLabel = "running";
-				$cmdValue = (string)$val;
-				log::add('mideawifi', 'debug', $cmdLabel . " " . $cmdValue);
 				break;
 		  case "setTemperature":
 				$cmdLabel = "target-temperature";
@@ -581,20 +593,15 @@ class mideawifiCmd extends cmd {
 			case 'refresh': 
 				$eqLogic->createAndUpdateCmd(false);
 				break;
-			case 'on':
-				log::add('mideawifi', 'debug', "Action ON");
-				$eqLogic->sendCmd('on');
+			case 'marche':
+				log::add('mideawifi', 'debug', "Action Marche");
+				$eqLogic->sendCmd('marche');
 				break;
-			case 'off':
-				log::add('mideawifi', 'debug', "Action OFF");
-				$eqLogic->sendCmd('off');
+			case 'arret':
+				log::add('mideawifi', 'debug', "Action Arret");
+				$eqLogic->sendCmd('arret');
 				break;
-			case 'running':
-				log::add('mideawifi', 'debug', "Action running");
-				$oldVal = $eqLogic->getCmd(null, "running")->execCmd();
-				$newVal = ($oldVal) ? 0 : 1;
-				$eqLogic->sendCmd('running', $newVal);
-		  	case 'setTemperature':
+		  case 'setTemperature':
 				log::add('mideawifi', 'debug', "Action setTemperature");
 				$eqLogic->sendCmd('setTemperature', isset($_options['text']) ? $_options['text'] : $_options['slider']); // scenario compatibility
 				break;
