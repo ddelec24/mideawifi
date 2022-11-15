@@ -492,13 +492,11 @@ class mideawifi extends eqLogic {
 		  case "marche":
 				$cmdLabel = "running";
 				$cmdValue = "1";
-				$this->checkAndUpdateCmd('boutonOnOff', 1);
 				log::add('mideawifi', 'debug', "running 1");
 				break;
 		  case "arret":
 				$cmdLabel = "running";
 				$cmdValue = "0";
-				$this->checkAndUpdateCmd('boutonOnOff', 0);
 				log::add('mideawifi', 'debug', "running 0");
 				break;
 		  case "setTemperature":
@@ -576,7 +574,6 @@ class mideawifi extends eqLogic {
 			log::add('mideawifi', 'debug', "Can't update $id, missing:<br/> Either => credentials + appliance id <br/> Either => token + key + ip");
 			return; // can't update
 		}
-	$this->refreshWidget();
   } // sendCmd
 }
 
@@ -595,10 +592,12 @@ class mideawifiCmd extends cmd {
 				break;
 			case 'marche':
 				log::add('mideawifi', 'debug', "Action Marche");
+				$eqLogic->checkAndUpdateCmd('running', 1);
 				$eqLogic->sendCmd('marche');
 				break;
 			case 'arret':
 				log::add('mideawifi', 'debug', "Action Arret");
+				$eqLogic->checkAndUpdateCmd('running', 0);
 				$eqLogic->sendCmd('arret');
 				break;
 		  case 'setTemperature':
@@ -639,7 +638,7 @@ class mideawifiCmd extends cmd {
 			  log::add('mideawifi', 'warn', 'Error while executing cmd ' . $this->getLogicalId());
 			  break;
 		}
-
+		mideawifi::refreshWidget();
 		return;
 			
 	}
