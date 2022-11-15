@@ -638,7 +638,7 @@ class mideawifiCmd extends cmd {
 			  log::add('mideawifi', 'warn', 'Error while executing cmd ' . $this->getLogicalId());
 			  break;
 		}
-		mideawifi::refreshWidget();
+		//mideawifi::refreshWidget();
 		return;
 			
 	}
