@@ -68,6 +68,17 @@ class mideawifi extends eqLogic {
                   '#_time_widget_#' => '0'
               )
           );
+          $return['action']['other']['eco'] = array(
+              'template' => 'tmplicon',
+              'display' => array(
+                  '#icon#' => '<i class=\'icon fas fa-leaf\'></i>',
+              ),
+              'replace' => array(
+                  '#_icon_on_#' => '<i class=\'icon fas fa-leaf\'></i>',
+                  '#_icon_off_#' => '<i class=\'icon fas fa-times\'></i>',
+                  '#_time_widget_#' => '0'
+              )
+          );
 
           return $return;
         }
@@ -228,7 +239,7 @@ class mideawifi extends eqLogic {
 							],
 			"running" =>    [
 							"type" => "info", "subType" => "binary", "name" => "Etat",
-							"order" => 880, "visible" => 0, "historized" => 0,
+							"order" => 880, "visible" => 0, "historized" => 1,
 							"display" => ["forceReturnLineBefore" => 0],
 							"generic_type" => "ENERGY_STATE",
 							"configuration" => ['repeatEventManagement' => 'never'],
@@ -281,6 +292,12 @@ class mideawifi extends eqLogic {
 							"display" => ["forceReturnLineBefore" => 0],
 							"template" => ["dashboard" => "default"] 
 							],
+			"eco" =>      [
+							"type" => "info", "subType" => "binary", "name" => "Eco",
+							"order" => 130, "visible" => 0, "historized" => 0,
+							"display" => ["forceReturnLineBefore" => 0],
+							"template" => ["dashboard" => "default"] 
+							],
 			/*"purify" =>     [
 							"type" => "info", "subType" => "binary", "name" => "Mode Purificateur",
 							"order" => 8, "visible" => 1, "historized" => 1,
@@ -308,12 +325,12 @@ class mideawifi extends eqLogic {
 							"display" => ["forceReturnLineBefore" => 0],
 							"template" => ["dashboard" => "default"] 
 							],*/
-			"eco" =>  [
+			/*"eco" =>  [
 							"type" => "info", "subType" => "binary", "name" => "Etat Eco",
 							"order" => 17, "visible" => 1, "historized" => 0,
 							"display" => ["forceReturnLineBefore" => 0],
 							"template" => ["dashboard" => "default"] 
-							],
+							],*/
 		  ];
 	  
 		$re2 = '/(.+)(?:$|\n)/i';
@@ -420,6 +437,20 @@ class mideawifi extends eqLogic {
 								  "value" => $this->getCmd(null, "turbo")->getId(),
 								  "template" => ["dashboard" => "mideawifi::turbo", "mobile" => "mideawifi::turbo"] 
 								  ],
+		  "ecoOn" =>  [
+								  "type" => "action", "subType" => "other", "name" => "Eco on",
+								  "order" => 10, "visible" => 1, "historized" => 0,
+								  "display" => [ "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 0],
+								  "value" => $this->getCmd(null, "eco")->getId(),
+								  "template" => ["dashboard" => "mideawifi::eco", "mobile" => "mideawifi::eco"] 
+								  ],
+		  "ecoOff" =>				  [
+								  "type" => "action", "subType" => "other", "name" => "Eco off",
+								  "order" => 11, "visible" => 1, "historized" => 0,
+								  "display" => [ "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 0],
+								  "value" => $this->getCmd(null, "eco")->getId(),
+								  "template" => ["dashboard" => "mideawifi::eco", "mobile" => "mideawifi::eco"] 
+								  ],
 		  "setTemperature" =>	  [
 								  "type" => "action", "subType" => "other", "name" => "Température de consigne",
 								  "order" => 52, "visible" => 1, "historized" => 0,
@@ -446,7 +477,7 @@ class mideawifi extends eqLogic {
 								  ],
 		  /*
 				  Auto = 102
-				  Full = 100
+				  Full = 100 => semble ne pas fonctionner, en tout cas chez julien80
 				  High = 80
 				  Medium = 60
 				  Low = 40
@@ -592,6 +623,14 @@ class mideawifi extends eqLogic {
 				$cmdLabel = "turbo";
 				$cmdValue = "0";
 				break;
+		  case "ecoOn":
+				$cmdLabel = "eco-mode";
+				$cmdValue = "1";
+				break;
+		  case "ecoOff":
+				$cmdLabel = "eco-mode";
+				$cmdValue = "0";
+				break;
 		  default:
 			  throw new Error('This should not append!');
 			  log::add('mideawifi', 'warn', 'Error while executing cmd ' . $this->getLogicalId());
@@ -607,7 +646,7 @@ class mideawifi extends eqLogic {
 		// when set a new lower temp target, a bug occurs. forcing eco-mode state fix that
 		$additionalParams = "";
 		if($cmd == "setTemperature") {
-			$currentMode = $this->getCmd(null, "mode");
+			$currentMode = $this->getCmd(null, "mode")->execCmd(); // @TODO verif si nécessaire de mettre ->execCmd() ???
 			if($currentMode == 2) { // eco mode exists only in cooling mode
 				$cmdEco = $this->getCmd(null, "eco");
 				$isEco = $cmdEco->execCmd();
@@ -616,7 +655,7 @@ class mideawifi extends eqLogic {
 				$additionalParams = "--eco-mode 0";
 			}
 		}
-		
+   		
 		if(!empty($ip) && !empty($token) && !empty($key)) {
 			log::add('mideawifi', 'debug', '[ENDPOINT] /set_appliance_attribute');
 			log::add('mideawifi', 'debug', 'midea-beautiful-air-cli set --ip ' . $ip . ' --token ' . $token . ' --key ' . $key . ' --' . $cmdLabel . ' ' . $cmdValue . $additionalParams);
@@ -648,58 +687,95 @@ class mideawifiCmd extends cmd {
 			case 'refresh': 
 				$eqLogic->createAndUpdateCmd(false);
 				break;
+            
 			case 'marche':
 				log::add('mideawifi', 'debug', "Action Marche");
 				$eqLogic->checkAndUpdateCmd('running', 1);
 				$eqLogic->sendCmd('marche');
 				break;
+            
 			case 'arret':
 				log::add('mideawifi', 'debug', "Action Arret");
 				$eqLogic->checkAndUpdateCmd('running', 0);
 				$eqLogic->sendCmd('arret');
 				break;
-		  case 'setTemperature':
+		  	case 'setTemperature':
 				log::add('mideawifi', 'debug', "Action setTemperature");
-				$eqLogic->sendCmd('setTemperature', isset($_options['text']) ? $_options['text'] : $_options['slider']); // scenario compatibility
+            	$temperature = isset($_options['text']) ? $_options['text'] : $_options['slider'];
+            	$eqLogic->checkAndUpdateCmd('target', $temperature);
+				$eqLogic->sendCmd('setTemperature', $temperature); // scenario compatibility
 				break;
+            
 			case 'setMode':
 				log::add('mideawifi', 'debug', "Action setMode");
-				$eqLogic->sendCmd('setMode', isset($_options['select']) ? $_options['select'] : $_options['slider']); // scenario compatibility
+            	$mode = isset($_options['select']) ? $_options['select'] : $_options['slider'];
+            	$eqLogic->checkAndUpdateCmd('mode', $mode);
+				$eqLogic->sendCmd('setMode', $mode); // scenario compatibility
 				break;
+            
 			case 'setFanSpeed':
 				log::add('mideawifi', 'debug', "Action setFanSpeed");
-				$eqLogic->sendCmd('setFanSpeed', isset($_options['select']) ? $_options['select'] : $_options['slider']); // scenario compatibility
+            	$fanSpeed = isset($_options['select']) ? $_options['select'] : $_options['slider'];
+            	$eqLogic->checkAndUpdateCmd('fan', $fanSpeed);
+				$eqLogic->sendCmd('setFanSpeed', $fanSpeed); // scenario compatibility
 				break;
+            
 			case 'horizontalSwingOn':
 				log::add('mideawifi', 'debug', "Action horizontalSwingOn");
             	$eqLogic->checkAndUpdateCmd('horizontalswing', 1);
 				$eqLogic->sendCmd('horizontalSwingOn');
 				break;
+            
 			case 'horizontalSwingOff':
 				log::add('mideawifi', 'debug', "Action horizontalSwingOff");
             	$eqLogic->checkAndUpdateCmd('horizontalswing', 0);
 				$eqLogic->sendCmd('horizontalSwingOff');
 				break;
+            
 			case 'verticalSwingOn':
 				log::add('mideawifi', 'debug', "Action verticalSwingOn");
             	$eqLogic->checkAndUpdateCmd('verticalswing', 1);
 				$eqLogic->sendCmd('verticalSwingOn');
 				break;
+            
 			case 'verticalSwingOff':
 				log::add('mideawifi', 'debug', "Action verticalSwingOff");
             	$eqLogic->checkAndUpdateCmd('verticalswing', 0);
 				$eqLogic->sendCmd('verticalSwingOff');
 				break;
+            
 			case 'turboOn':
 				log::add('mideawifi', 'debug', "Action turboOn");
             	$eqLogic->checkAndUpdateCmd('turbo', 1);
 				$eqLogic->sendCmd('turboOn');
 				break;
+            
 			case 'turboOff':
 				log::add('mideawifi', 'debug', "Action turboOff");
             	$eqLogic->checkAndUpdateCmd('turbo', 0);
 				$eqLogic->sendCmd('turboOff');
 				break;
+            
+			case 'ecoOn':
+				log::add('mideawifi', 'debug', "Action ecoOn");
+                $currentMode = $eqLogic->getCmd(null, "mode")->execCmd(); // @TODO verif si nécessaire de mettre ->execCmd() ???
+                if($currentMode != 2) //eco mode exists only in cooling mode
+                	return;
+
+            	$eqLogic->checkAndUpdateCmd('eco', 1);
+				$eqLogic->sendCmd('ecoOn');
+				break;
+            
+			case 'ecoOff':
+				log::add('mideawifi', 'debug', "Action ecoOff");
+                $currentMode = $eqLogic->getCmd(null, "mode")->execCmd(); // @TODO verif si nécessaire de mettre ->execCmd() ???
+                if($currentMode != 2) //eco mode exists only in cooling mode
+                	return;
+            
+            	$eqLogic->checkAndUpdateCmd('eco', 0);
+				$eqLogic->sendCmd('ecoOff');
+				break;
+            
 			default:
 			  throw new Error('This should not append!');
 			  log::add('mideawifi', 'warn', 'Error while executing cmd ' . $this->getLogicalId());
