@@ -194,6 +194,22 @@ function discover() {
   log::add("mideawifi", "debug", "============================ DISCOVER ============================");
   $json = 			json_decode($data);
   $response = 		$json->response;
+  $status = 		$json->status;
+  
+  if($status == "nok") {
+    event::add('jeedom::alert', array(
+      'level' => 'info',
+      'page' => 'plugin',
+      'ttl' => 10000,
+      'message' => __('Erreur Cloud Midea, merci d\'attendre un peu avant de retenter. Erreur: ' . $response, __FILE__),
+  	));
+    
+    return ["countResults" => 0,
+          "newEq" => 0,
+          "results"=> []
+          ];
+  }
+	
   //log::add("mideawifi", "debug", "JSON Response : " . $response);
   //log::add("mideawifi", "debug", "JSON Response error: " . json_last_error_msg());
   //$re = '/^(id (?:.*)(?:\n.*)+key(?:.*\n))$/imU'; // capture les équipements 
