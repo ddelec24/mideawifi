@@ -433,7 +433,7 @@ class mideawifi extends eqLogic {
 		  "turboOff" =>				  [
 								  "type" => "action", "subType" => "other", "name" => "Turbo off",
 								  "order" => 9, "visible" => 1, "historized" => 0,
-								  "display" => [ "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 0],
+								  "display" => [ "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 1],
 								  "value" => $this->getCmd(null, "turbo")->getId(),
 								  "template" => ["dashboard" => "mideawifi::turbo", "mobile" => "mideawifi::turbo"] 
 								  ],
