@@ -1,0 +1,15 @@
+<div class="input-group input-group-sm" style="width: 100%">
+  <span class="input-group-addon roundedLeft" style="width: 100px">#slider_placeholder# <sup><i class="fas fa-question-circle tooltips" title="La valeur envoyée à votre appareil sera arrondie à la dizaine prêt"></i></sup> </span> 
+  <input value="#slider#" class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="slider" data-cmd_id="#id#" data-uid="#uid#" />
+  <span class="input-group-btn">
+    <button class="btn btn-default listCmdInfo roundedRight" type="button" tooltip="{{Sélectionner la commande}}" data-cmd_id="#id#"  data-uid="#uid#"><i class="fas fa-list-alt"></i></button>
+  </span>
+</div>
+
+<script>
+  $('.listCmdInfo[data-uid=#uid#]').off('click').on('click', function() {
+    jeedom.cmd.getSelectModal({cmd: {type: 'info'}}, function(result) {
+      $('.expressionAttr[data-l1key=options][data-l2key=slider][data-uid=#uid#]').atCaret('insert', result.human);
+    });
+  });
+</script>
