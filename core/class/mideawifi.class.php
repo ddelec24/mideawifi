@@ -656,7 +656,7 @@ class mideawifi extends eqLogic {
 			}
 		}
    		
-		/*if(!empty($ip) && !empty($token) && !empty($key)) {
+		if(!empty($ip) && !empty($token) && !empty($key)) {
 			log::add('mideawifi', 'debug', '[ENDPOINT] /set_appliance_attribute');
 			log::add('mideawifi', 'debug', 'midea-beautiful-air-cli set --ip ' . $ip . ' --token ' . $token . ' --key ' . $key . ' --' . $cmdLabel . ' ' . $cmdValue . $additionalParams);
 			$data = curlMideawifiDocker("/set_appliance_attribute", array("ipaddress" => $ip, "token" => $token, "key" => $key, "commands" => $command . $additionalParams));
@@ -669,7 +669,7 @@ class mideawifi extends eqLogic {
 		} else {
 			log::add('mideawifi', 'debug', "Can't update $id, missing:<br/> Either => credentials + appliance id <br/> Either => token + key + ip");
 			return; // can't update
-		}*/
+		}
         
   } // sendCmd
 }
@@ -716,7 +716,12 @@ class mideawifiCmd extends cmd {
 			case 'setFanSpeed':
 				log::add('mideawifi', 'debug', "Action setFanSpeed");
             			$fanSpeed = isset($_options['select']) ? $_options['select'] : $_options['slider'];
-            			$fanSpeed = ceil($fanSpeed / 10) * 10; // round to 10
+            			if(isset($_options['checkAutoFan']) || $fanSpeed == 102) {
+                          	$fanSpeed = 102;
+                        } else {
+            				$fanSpeed = ceil($fanSpeed / 20) * 20; // round to 20
+                        }
+            
             			$eqLogic->checkAndUpdateCmd('fan', $fanSpeed);
             			log::add('mideawifi', 'debug', 'roundVal Fan Speed: ' . $fanSpeed);
 				$eqLogic->sendCmd('setFanSpeed', $fanSpeed); // scenario compatibility
@@ -799,10 +804,6 @@ class mideawifiCmd extends cmd {
 
         $currentValue = "";
         if (!is_null($data)) {
-            $target = $eqLogic->getCmd(null, "target");
-            $currentValue = $target->execCmd();
-
-            $data = str_replace("#currentValue#", $currentValue, $data);
             if (version_compare(jeedom::version(),'4.2.0','>=')) {
                 if(!is_array($data)) return array('template' => $data, 'isCoreWidget' => false);
             } else return $data;
