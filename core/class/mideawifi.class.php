@@ -452,7 +452,7 @@ class mideawifi extends eqLogic {
 								  "template" => ["dashboard" => "mideawifi::eco", "mobile" => "mideawifi::eco"] 
 								  ],
 		  "setTemperature" =>	  [
-								  "type" => "action", "subType" => "other", "name" => "Température de consigne",
+								  "type" => "action", "subType" => "slider", "name" => "Température de consigne",
 								  "order" => 52, "visible" => 1, "historized" => 0,
 								  "display" => ["forceReturnLineBefore" => 1, "forceReturnLineAfter" => 1],
 								  "value" => $this->getCmd(null, "target")->getId(),
