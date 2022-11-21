@@ -104,11 +104,31 @@ class mideawifi extends eqLogic {
 	/*
 	* Fonction exécutée automatiquement toutes les 5 minutes par Jeedom*/
 	public static function cron5() {
-      	foreach (self::byType('mideawifi') as $eqLogic) {
-			if($eqLogic->getIsEnable() == 1) {
-				$eqLogic->createAndUpdateCmd(false);
-            }
-		}
+      	$eqLogics = self::byType('mideawifi');
+      	if(count($eqLogics) > 0) {
+          // check if midea container is running
+          $dockerContainer = eqLogic::byLogicalId('1::mideawifi', 'docker2');
+
+          if(is_object($dockerContainer)) {
+              $info = $dockerContainer->getCmd(null, 'state');
+              if(is_object($info) && $info->execCmd() != "running") {
+                log::add('mideawifi', 'info', 'Mideawifi Container state: ' . $info->execCmd() . ' | Starting/restarting now... ');
+                $dockerContainer->startDocker();
+                sleep(30); // sleep 30sec to let the time to start, then pull infos
+                try {
+                    plugin::byId('docker2');
+                    docker2::pull(); // refresh infos containers
+                      } catch (Exception $e) {
+                }
+                return;
+              }
+            foreach($eqLogics as $eqLogic) {
+                if($eqLogic->getIsEnable() == 1) {
+                    $eqLogic->createAndUpdateCmd(false);
+                }
+            } //foreach
+          } // object
+        } // > 0
     }
 	
 
