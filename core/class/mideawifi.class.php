@@ -104,7 +104,11 @@ class mideawifi extends eqLogic {
 	/*
 	* Fonction exécutée automatiquement toutes les 5 minutes par Jeedom*/
 	public static function cron5() {
-      self::createAndUpdateCmd(false); // update commands
+      	foreach (self::byType('mideawifi') as $eqLogic) {
+			if($eqLogic->getIsEnable() == 1) {
+				$eqLogic->createAndUpdateCmd(false);
+            }
+		}
     }
 	
 
@@ -661,7 +665,7 @@ class mideawifi extends eqLogic {
 			}
 		}
    		
-		/*if(!empty($ip) && !empty($token) && !empty($key)) {
+		if(!empty($ip) && !empty($token) && !empty($key)) {
 			log::add('mideawifi', 'debug', '[ENDPOINT] /set_appliance_attribute');
 			log::add('mideawifi', 'debug', 'midea-beautiful-air-cli set --ip ' . $ip . ' --token ' . $token . ' --key ' . $key . ' --' . $cmdLabel . ' ' . $cmdValue . $additionalParams);
 			$data = curlMideawifiDocker("/set_appliance_attribute", array("ipaddress" => $ip, "token" => $token, "key" => $key, "commands" => $command . $additionalParams));
@@ -674,7 +678,7 @@ class mideawifi extends eqLogic {
 		} else {
 			log::add('mideawifi', 'debug', "Can't update $id, missing:<br/> Either => credentials + appliance id <br/> Either => token + key + ip");
 			return; // can't update
-		}*/
+		}
 
     	$json = json_decode($data);
   
