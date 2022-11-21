@@ -162,7 +162,8 @@ class mideawifi extends eqLogic {
 	// Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
 	public function postSave() {
 		//log::add('mideawifi', 'debug', 'postSave called');
-		self::createAndUpdateCmd();
+      	if($this->getIsEnable() == 1)
+			self::createAndUpdateCmd();
 	}
 
 	// Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -655,11 +656,11 @@ class mideawifi extends eqLogic {
 		// when set a new lower temp target, a bug occurs. forcing eco-mode state fix that
 		$additionalParams = "";
 		if($cmd == "setTemperature") {
-			$currentMode = $this->getCmd(null, "mode")->execCmd(); // @TODO verif si nécessaire de mettre ->execCmd() ???
+			$currentMode = $this->getCmd(null, "mode")->execCmd();
 			if($currentMode == 2) { // eco mode exists only in cooling mode
 				$cmdEco = $this->getCmd(null, "eco");
 				$isEco = $cmdEco->execCmd();
-				$additionalParams = ($isEco) ? "--eco-mode 1" : "--eco-mode 0"; // @TODO a vérifier si la valeur "eco" récupérée dans les supports correspond bien au mode de clim éco
+				$additionalParams = ($isEco) ? "--eco-mode 1" : "--eco-mode 0";
 			} else {
 				$additionalParams = "--eco-mode 0";
 			}
@@ -697,6 +698,9 @@ class mideawifiCmd extends cmd {
 		log::add("mideawifi", "debug", "LogicalId action => " . $this->getLogicalId());
 		Log::add('mideawifi', 'debug', '$_options[] traité: ' . json_encode($_options));
 	  
+      	if($eqLogic->getIsEnable() == 0)
+          return;
+      
 		switch ($this->getLogicalId()) {
 			case 'refresh': 
 				$eqLogic->createAndUpdateCmd(false);
