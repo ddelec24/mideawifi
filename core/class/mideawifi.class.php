@@ -716,7 +716,7 @@ class mideawifiCmd extends cmd {
 			case 'setFanSpeed':
 				log::add('mideawifi', 'debug', "Action setFanSpeed");
             			$fanSpeed = isset($_options['select']) ? $_options['select'] : $_options['slider'];
-            			if(isset($_options['checkAutoFan']) || $fanSpeed == 102) {
+            			if($_options['checkAutoFan'] == 1 || $fanSpeed == 102) {
                           	$fanSpeed = 102;
                         } else {
             				$fanSpeed = ceil($fanSpeed / 20) * 20; // round to 20
