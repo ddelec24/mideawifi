@@ -102,9 +102,11 @@ class mideawifi extends eqLogic {
 	*/
 
 	/*
-	* Fonction exécutée automatiquement toutes les 5 minutes par Jeedom
-	public static function cron5() {}
-	*/
+	* Fonction exécutée automatiquement toutes les 5 minutes par Jeedom*/
+	public static function cron5() {
+      self::createAndUpdateCmd(false); // update commands
+    }
+	
 
 	/*
 	* Fonction exécutée automatiquement toutes les 10 minutes par Jeedom
@@ -227,8 +229,11 @@ class mideawifi extends eqLogic {
 		log::add('mideawifi', 'debug', '[GET STATUS] ' . $data);
 	  
 		$json = json_decode($data);
-			
-		/*$excludeKeys = ["id","addr","s/n","model","ssid","name","supports","F","version"];*/
+  
+        if($json->status == "nok") {
+          log::add('mideawifi', 'debug', 'Error while updating : Midea cloud not responding or error');
+          return;
+        }
 		
 		$includeKeys = [
 			"online" =>     [
@@ -656,7 +661,7 @@ class mideawifi extends eqLogic {
 			}
 		}
    		
-		if(!empty($ip) && !empty($token) && !empty($key)) {
+		/*if(!empty($ip) && !empty($token) && !empty($key)) {
 			log::add('mideawifi', 'debug', '[ENDPOINT] /set_appliance_attribute');
 			log::add('mideawifi', 'debug', 'midea-beautiful-air-cli set --ip ' . $ip . ' --token ' . $token . ' --key ' . $key . ' --' . $cmdLabel . ' ' . $cmdValue . $additionalParams);
 			$data = curlMideawifiDocker("/set_appliance_attribute", array("ipaddress" => $ip, "token" => $token, "key" => $key, "commands" => $command . $additionalParams));
@@ -669,7 +674,12 @@ class mideawifi extends eqLogic {
 		} else {
 			log::add('mideawifi', 'debug', "Can't update $id, missing:<br/> Either => credentials + appliance id <br/> Either => token + key + ip");
 			return; // can't update
-		}
+		}*/
+
+    	$json = json_decode($data);
+  
+        if($json->status == "nok")
+          log::add('mideawifi', 'debug', 'Error while sending : Midea cloud not responding or error');
         
   } // sendCmd
 }
@@ -689,77 +699,66 @@ class mideawifiCmd extends cmd {
 				break;
             
 			case 'marche':
-				log::add('mideawifi', 'debug', "Action Marche");
 				$eqLogic->checkAndUpdateCmd('running', 1);
 				$eqLogic->sendCmd('marche');
 				break;
             
 			case 'arret':
-				log::add('mideawifi', 'debug', "Action Arret");
 				$eqLogic->checkAndUpdateCmd('running', 0);
 				$eqLogic->sendCmd('arret');
 				break;
+            
 		  	case 'setTemperature':
-				log::add('mideawifi', 'debug', "Action setTemperature");
-            			$temperature = isset($_options['text']) ? $_options['text'] : $_options['slider'];
-            			$eqLogic->checkAndUpdateCmd('target', $temperature);
-				$eqLogic->sendCmd('setTemperature', $temperature); // scenario compatibility
+				$temperature = isset($_options['text']) ? $_options['text'] : $_options['slider'];  // scenario compatibility
+				$eqLogic->checkAndUpdateCmd('target', $temperature);
+				$eqLogic->sendCmd('setTemperature', $temperature);
 				break;
             
 			case 'setMode':
-				log::add('mideawifi', 'debug', "Action setMode");
-            			$mode = isset($_options['select']) ? $_options['select'] : $_options['slider'];
-            			$eqLogic->checkAndUpdateCmd('mode', $mode);
-				$eqLogic->sendCmd('setMode', $mode); // scenario compatibility
+ 				$mode = isset($_options['select']) ? $_options['select'] : $_options['slider']; // scenario compatibility
+				$eqLogic->checkAndUpdateCmd('mode', $mode);
+				$eqLogic->sendCmd('setMode', $mode);
 				break;
             
 			case 'setFanSpeed':
-				log::add('mideawifi', 'debug', "Action setFanSpeed");
-            			$fanSpeed = isset($_options['select']) ? $_options['select'] : $_options['slider'];
-            			if($_options['checkAutoFan'] == 1 || $fanSpeed == 102) {
-                          	$fanSpeed = 102;
-                        } else {
-            				$fanSpeed = ceil($fanSpeed / 20) * 20; // round to 20
-                        }
+				$fanSpeed = isset($_options['select']) ? $_options['select'] : $_options['slider']; // scenario compatibility
+				if($_options['checkAutoFan'] == 1 || $fanSpeed == 102) {
+				  	$fanSpeed = 102;
+ 				} else {
+					$fanSpeed = ceil($fanSpeed / 20) * 20; // round to 20
+				}
             
-            			$eqLogic->checkAndUpdateCmd('fan', $fanSpeed);
-            			log::add('mideawifi', 'debug', 'roundVal Fan Speed: ' . $fanSpeed);
-				$eqLogic->sendCmd('setFanSpeed', $fanSpeed); // scenario compatibility
+				$eqLogic->checkAndUpdateCmd('fan', $fanSpeed);
+				$eqLogic->sendCmd('setFanSpeed', $fanSpeed);
 				break;
             
 			case 'horizontalSwingOn':
-				log::add('mideawifi', 'debug', "Action horizontalSwingOn");
-            			$eqLogic->checkAndUpdateCmd('horizontalswing', 1);
+				$eqLogic->checkAndUpdateCmd('horizontalswing', 1);
 				$eqLogic->sendCmd('horizontalSwingOn');
 				break;
             
 			case 'horizontalSwingOff':
-				log::add('mideawifi', 'debug', "Action horizontalSwingOff");
-            			$eqLogic->checkAndUpdateCmd('horizontalswing', 0);
+				$eqLogic->checkAndUpdateCmd('horizontalswing', 0);
 				$eqLogic->sendCmd('horizontalSwingOff');
 				break;
             
 			case 'verticalSwingOn':
-				log::add('mideawifi', 'debug', "Action verticalSwingOn");
-            			$eqLogic->checkAndUpdateCmd('verticalswing', 1);
+				$eqLogic->checkAndUpdateCmd('verticalswing', 1);
 				$eqLogic->sendCmd('verticalSwingOn');
 				break;
             
 			case 'verticalSwingOff':
-				log::add('mideawifi', 'debug', "Action verticalSwingOff");
-            			$eqLogic->checkAndUpdateCmd('verticalswing', 0);
+				$eqLogic->checkAndUpdateCmd('verticalswing', 0);
 				$eqLogic->sendCmd('verticalSwingOff');
 				break;
             
 			case 'turboOn':
-				log::add('mideawifi', 'debug', "Action turboOn");
-            			$eqLogic->checkAndUpdateCmd('turbo', 1);
+				$eqLogic->checkAndUpdateCmd('turbo', 1);
 				$eqLogic->sendCmd('turboOn');
 				break;
             
 			case 'turboOff':
-				log::add('mideawifi', 'debug', "Action turboOff");
-            			$eqLogic->checkAndUpdateCmd('turbo', 0);
+				$eqLogic->checkAndUpdateCmd('turbo', 0);
 				$eqLogic->sendCmd('turboOff');
 				break;
             
