@@ -738,6 +738,8 @@ class mideawifiCmd extends cmd {
             
 		  	case 'setTemperature':
 				$temperature = isset($_options['text']) ? $_options['text'] : $_options['slider'];  // scenario compatibility
+				if($temperature < 16 || $temperature > 30)
+					return;
 				$eqLogic->checkAndUpdateCmd('target', $temperature);
 				$eqLogic->sendCmd('setTemperature', $temperature);
 				break;
