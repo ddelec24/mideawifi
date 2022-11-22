@@ -281,15 +281,15 @@ class mideawifi extends eqLogic {
 							"display" => ["forceReturnLineBefore" => 0],
 							"template" => ["dashboard" => "default"], "unite" => "°C" ],
 			"indoor" =>     [
-							"type" => "info", "subType" => "string", "name" => "Température intérieure",
+							"type" => "info", "subType" => "numeric", "name" => "Température intérieure",
 							"order" => 13, "visible" => 1, "historized" => 1,
 							"display" => ["forceReturnLineBefore" => 0],
-							"template" => ["dashboard" => "default"], "unite" => "°C" ],
+							"template" => ["dashboard" => "line"], "unite" => "°C" ],
 			"outdoor" =>    [
-							"type" => "info", "subType" => "string", "name" => "Température extérieure",
+							"type" => "info", "subType" => "numeric", "name" => "Température extérieure",
 							"order" => 14, "visible" => 1, "historized" => 1,
 							"display" => ["forceReturnLineBefore" => 0],
-							"template" => ["dashboard" => "default"], "unite" => "°C" ],
+							"template" => ["dashboard" => "line"], "unite" => "°C" ],
 			"fan" =>        [
 							"type" => "info", "subType" => "string", "name" => "Vitesse de ventilation",
 							"order" => 15, "visible" => 0, "historized" => 0,
@@ -385,7 +385,7 @@ class mideawifi extends eqLogic {
 						  $cmdLabel = $includeKeysSupport[$supportedKey];
 						  if($bCreateCmd)
 							self::_saveEqLogic($supportedKey, $cmdLabel);
-						
+
 						  $this->checkAndUpdateCmd($supportedKey, $supportedVal); // update with current value
 
 					  } //key exists
