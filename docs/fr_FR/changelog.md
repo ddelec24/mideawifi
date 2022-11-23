@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## Nouvelle Beta à venir - 2022-12-01
++ **Ne faites pas la mise à jour si vous avez des scénarios qui tournent et que vous ne voulez pas tout perdre**  
++ Une nouvelle version du plugin va arriver en beta prochainement. Elle implique pas mal de changements:  
++ - Utilisation d'un nouveau script fonctionnel cloud et non cloud  
++ - Compatible AC et Déshumidificateur  
++ - Il faudra supprimer vos équipements du fait du nouveau fonctionnement  
++ - Compatible uniquement jeedom 4.2 et supérieur  
++ La partie commandes pour déshumidificateur n'est pas implantée, juste la remontée des informations. **A la recherche de testeurs**  
++ Il est conseillé de faire des tests sur une machine virtuelle par exemple, avant d'appliquer la nouvelle beta qui devrait arriver début décembre.  +
++ Pour info, je passerais sur [ce script](https://github.com/nbogojevic/midea-beautiful-air) qui permet plus de choses.  
+
+
 ## 1.0.6beta - 2021-09-15  
 + Fix de bug et tests ok avec un premier utilisateur pour un déshumidificateur cloud  
 + /!\ Pour utiliser cette beta il faut supprimer vos équipements et relancer les dépendances  
