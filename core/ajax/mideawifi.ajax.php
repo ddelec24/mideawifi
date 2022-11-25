@@ -152,7 +152,7 @@ function installMideawifiDocker() {
 
 function startMideawifiContainer() {
  
-	$command = "docker run -d --network host --name mideawifi midea-beautiful-air";
+	$command = "docker run -d --restart=always --network host --name mideawifi midea-beautiful-air";
   $docker = eqLogic::byLogicalId('1::mideawifi', 'docker2');
   if (!is_object($docker)) {
       $docker = new docker2();
