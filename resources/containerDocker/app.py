@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-import os, re
+import os, re, time
 
 app = Flask(__name__)
 
@@ -22,13 +22,16 @@ def discover_applicances():
 		return jsonify({"status": "nok", "response":"Missing params: password"}), 400
 
 	askwithapp = " --app MSmartHome" if WITHAPP == "y" else ""
+    
+	currentTime = time.time();
 	stream = os.popen('midea-beautiful-air-cli discover --account ' + ACCOUNT_EMAIL + ' --password ' + PASSWORD + ' --credentials' + askwithapp)
 	output = stream.read()
-
+	latency = round(time.time() - currentTime, 3);
+    
 	if not output:
-		return jsonify( {"status": "nok", "response": "no response from cmd"} ), 400
+		return jsonify( {"status": "nok", "latency": latency, "response": "no response from cmd"} ), 400
 
-	return jsonify( {"status": "ok", "response": output} )
+	return jsonify( {"status": "ok", "latency": latency, "response": output} )
 
 
 
@@ -48,13 +51,15 @@ def discover_applicance_from_ip():
 	if not IP_ADDRESS:
 		return jsonify({"status": "nok", "response":"Missing params: ip address"}), 400
 
+	currentTime = time.time();
 	stream = os.popen('midea-beautiful-air-cli discover --account ' + ACCOUNT_EMAIL + ' --password ' + PASSWORD + ' --address ' + IP_ADDRESS + ' --credentials')
 	output = stream.read()
-
+	latency = round(time.time() - currentTime, 3);
+    
 	if not output:
-		return jsonify( {"status": "nok", "response": "no response from cmd"} ), 400
+		return jsonify( {"status": "nok", "latency": latency, "response": "no response from cmd"} ), 400
 
-	return jsonify( {"status": "ok", "response": output} )
+	return jsonify( {"status": "ok", "latency": latency, "response": output} )
 
 @app.route('/appliance_status_with_token_key', methods = ['POST'])
 def appliance_status_with_token_key():
@@ -72,13 +77,15 @@ def appliance_status_with_token_key():
 	if not KEY:
 		return jsonify({"status": "nok", "response":"Missing params: key"}), 400
 
+	currentTime = time.time();
 	stream = os.popen('midea-beautiful-air-cli status --ip ' + IP_ADDRESS + ' --token ' + TOKEN + ' --key ' + KEY)
 	output = stream.read()
-
+	latency = round(time.time() - currentTime, 3);
+    
 	if not output:
-		return jsonify( {"status": "nok", "response": "no response from cmd"} ), 400
+		return jsonify( {"status": "nok", "latency": latency, "response": "no response from cmd"} ), 400
 
-	return jsonify( {"status": "ok", "response": output} )
+	return jsonify( {"status": "ok", "latency": latency, "response": output} )
 
 @app.route('/appliance_status_with_account', methods = ['POST'])
 def appliance_status_with_account():
@@ -96,13 +103,15 @@ def appliance_status_with_account():
 	if not IP_ADDRESS:
 		return jsonify({"status": "nok", "response":"Missing params: ip address"}), 400
 
+	currentTime = time.time();
 	stream = os.popen('midea-beautiful-air-cli status --ip ' + IP_ADDRESS + ' --account ' + ACCOUNT_EMAIL + ' --password ' + PASSWORD)
 	output = stream.read()
-
+	latency = round(time.time() - currentTime, 3);
+    
 	if not output:
-		return jsonify( {"status": "nok", "response": "no response from cmd"} ), 400
+		return jsonify( {"status": "nok", "latency": latency, "response": "no response from cmd"} ), 400
 
-	return jsonify( {"status": "ok", "response": output} )
+	return jsonify( {"status": "ok", "latency": latency, "response": output} )
 
 @app.route('/appliance_status_with_id_and_account_cloud', methods = ['POST'])
 def appliance_status_with_id_account_cloud():
@@ -120,13 +129,15 @@ def appliance_status_with_id_account_cloud():
 	if not PASSWORD:
 		return jsonify({"status": "nok", "response":"Missing params: password"}), 400
 
+	currentTime = time.time();
 	stream = os.popen('midea-beautiful-air-cli status --id ' + APPLIANCE_ID + ' --account ' + ACCOUNT_EMAIL + ' --password ' + PASSWORD + ' --cloud')
 	output = stream.read()
-
+	latency = round(time.time() - currentTime, 3);
+    
 	if not output:
-		return jsonify( {"status": "nok", "response": "no response from cmd"} ), 400
+		return jsonify( {"status": "nok", "latency": latency, "response": "no response from cmd"} ), 400
 
-	return jsonify( {"status": "ok", "response": output} )
+	return jsonify( {"status": "ok", "latency": latency, "response": output} )
 
 
 @app.route('/set_appliance_attribute', methods = ['POST'])
@@ -148,13 +159,15 @@ def set_appliance_attribute():
 	if not COMMANDS:
 		return jsonify({"status": "nok", "response":"Missing params: command"}), 400
 
+	currentTime = time.time();
 	stream = os.popen('midea-beautiful-air-cli set --ip ' + IP_ADDRESS + ' --token ' + TOKEN + ' --key ' + KEY + ' ' + COMMANDS)
 	output = stream.read()
-
+	latency = round(time.time() - currentTime, 3);
+    
 	if not output:
-		return jsonify( {"status": "nok", "response": "no response from cmd"} ), 400
+		return jsonify( {"status": "nok", "latency": latency, "response": "no response from cmd"} ), 400
 
-	return jsonify( {"status": "ok", "response": output} )
+	return jsonify( {"status": "ok", "latency": latency, "response": output} )
 
 @app.route('/set_appliance_attribute_with_account', methods = ['POST'])
 def set_appliance_attribute_with_account():
@@ -175,10 +188,12 @@ def set_appliance_attribute_with_account():
 	if not COMMANDS:
 		return jsonify({"status": "nok", "response":"Missing params: command"}), 400
 
+	currentTime = time.time();
 	stream = os.popen('midea-beautiful-air-cli set --id ' + APPLIANCE_ID + ' --account ' + ACCOUNT_EMAIL + ' --password ' + PASSWORD + ' ' + COMMANDS + ' --cloud')
 	output = stream.read()
+	latency = round(time.time() - currentTime, 3);
 
 	if not output:
-		return jsonify( {"status": "nok", "response": "no response from cmd"} ), 400
+		return jsonify( {"status": "nok", "latency": latency, "response": "no response from cmd"} ), 400
 
-	return jsonify( {"status": "ok", "response": output} )
+	return jsonify( {"status": "ok", "latency": latency, "response": output} )
