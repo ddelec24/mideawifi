@@ -68,6 +68,17 @@ class mideawifi extends eqLogic {
                   '#_time_widget_#' => '0'
               )
           );
+          $return['action']['other']['sleep'] = array(
+              'template' => 'tmplicon',
+              'display' => array(
+                  '#icon#' => '<i class=\'icon fas fa-bed\'></i>',
+              ),
+              'replace' => array(
+                  '#_icon_on_#' => '<i class=\'icon fas fa-bed\'></i>',
+                  '#_icon_off_#' => '<i class=\'icon fas fa-times\'></i>',
+                  '#_time_widget_#' => '0'
+              )
+          );
           /*$return['action']['other']['eco'] = array(
               'template' => 'tmplicon',
               'display' => array(
@@ -322,6 +333,12 @@ class mideawifi extends eqLogic {
 							"display" => ["forceReturnLineBefore" => 0],
 							"template" => ["dashboard" => "default"] 
 							],
+			"sleep" =>      [
+							"type" => "info", "subType" => "binary", "name" => "Sleep",
+							"order" => 121, "visible" => 0, "historized" => 0,
+							"display" => ["forceReturnLineBefore" => 0],
+							"template" => ["dashboard" => "default"] 
+							],
 			/*"eco" =>      [
 							"type" => "info", "subType" => "binary", "name" => "Eco",
 							"order" => 130, "visible" => 0, "historized" => 0,
@@ -446,26 +463,40 @@ class mideawifi extends eqLogic {
 								  "value" => $this->getCmd(null, "verticalswing")->getId(),
 								  "template" => ["dashboard" => "mideawifi::swingV", "mobile" => "mideawifi::swingV"] 
 								  ],
-		  "verticalSwingOff" =>				  [
+		  "verticalSwingOff" =>	  [
 								  "type" => "action", "subType" => "other", "name" => "VerticalSwing off",
 								  "order" => 7, "visible" => 1, "historized" => 0,
-								  "display" => [ "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 0],
+								  "display" => [ "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 1],
 								  "value" => $this->getCmd(null, "verticalswing")->getId(),
 								  "template" => ["dashboard" => "mideawifi::swingV", "mobile" => "mideawifi::swingV"] 
 								  ],
-		  "turboOn" =>  [
+		  "turboOn" => 			  [
 								  "type" => "action", "subType" => "other", "name" => "Turbo on",
 								  "order" => 8, "visible" => 1, "historized" => 0,
 								  "display" => [ "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 0],
 								  "value" => $this->getCmd(null, "turbo")->getId(),
 								  "template" => ["dashboard" => "mideawifi::turbo", "mobile" => "mideawifi::turbo"] 
 								  ],
-		  "turboOff" =>				  [
+		  "turboOff" =>			  [
 								  "type" => "action", "subType" => "other", "name" => "Turbo off",
 								  "order" => 9, "visible" => 1, "historized" => 0,
-								  "display" => [ "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 1],
+								  "display" => [ "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 0],
 								  "value" => $this->getCmd(null, "turbo")->getId(),
 								  "template" => ["dashboard" => "mideawifi::turbo", "mobile" => "mideawifi::turbo"] 
+								  ],
+		  "comfortSleepOn" => 			  [
+								  "type" => "action", "subType" => "other", "name" => "Sleep on",
+								  "order" => 10, "visible" => 1, "historized" => 0,
+								  "display" => [ "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 0],
+								  "value" => $this->getCmd(null, "sleep")->getId(),
+								  "template" => ["dashboard" => "mideawifi::sleep", "mobile" => "mideawifi::sleep"] 
+								  ],
+		  "comfortSleepOff" =>			  [
+								  "type" => "action", "subType" => "other", "name" => "Sleep off",
+								  "order" => 11, "visible" => 1, "historized" => 0,
+								  "display" => [ "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 1],
+								  "value" => $this->getCmd(null, "sleep")->getId(),
+								  "template" => ["dashboard" => "mideawifi::sleep", "mobile" => "mideawifi::sleep"] 
 								  ],
 		  /*"ecoOn" =>  [
 								  "type" => "action", "subType" => "other", "name" => "Eco on",
@@ -653,6 +684,14 @@ class mideawifi extends eqLogic {
 				$cmdLabel = "turbo";
 				$cmdValue = "0";
 				break;
+          case "comfortSleepOn":
+            	$cmdLabel = "comfort-sleep";
+            	$cmdValue = "1";
+            	break;
+          case "comfortSleepOff":
+            	$cmdLabel = "comfort-sleep";
+            	$cmdValue = "0";
+            	break;
 		  /*case "ecoOn":
 				$cmdLabel = "eco-mode";
 				$cmdValue = "1";
@@ -792,6 +831,15 @@ class mideawifiCmd extends cmd {
 				$eqLogic->sendCmd('turboOff');
 				break;
             
+			case 'comfortSleepOn':
+				$eqLogic->checkAndUpdateCmd('sleep', 1);
+				$eqLogic->sendCmd('comfortSleepOn');
+				break;
+            
+			case 'comfortSleepOff':
+				$eqLogic->checkAndUpdateCmd('sleep', 0);
+				$eqLogic->sendCmd('comfortSleepOff');
+				break;
 			/*case 'ecoOn':
 				log::add('mideawifi', 'debug', "Action ecoOn");
                 		$currentMode = $eqLogic->getCmd(null, "mode")->execCmd(); // @TODO verif si nécessaire de mettre ->execCmd() ???
