@@ -250,7 +250,6 @@ class mideawifi extends eqLogic {
 		
 		$accountmail = 	trim(config::byKey('accountmail', 'mideawifi'));
 		$accountpass = 	trim(config::byKey('accountpass', 'mideawifi'));
-		
 		if(!empty($ip) && !empty($token) && !empty($key)) {
 			log::add('mideawifi', 'debug', '[ENDPOINT] /appliance_status_with_token_key');
 			$data = curlMideawifiDocker("/appliance_status_with_token_key", array("ipaddress" => $ip, "token" => $token, "key" => $key));
@@ -261,7 +260,6 @@ class mideawifi extends eqLogic {
 			log::add('mideawifi', 'debug', "Can't update $id, missing:<br/> Either => credentials + ip <br/> Either => token + key + ip");
 			return; // can't update
 		}
-		
 		log::add('mideawifi', 'debug', '[GET STATUS] ' . $data);
 	  
 		$json = json_decode($data);
@@ -422,7 +420,7 @@ class mideawifi extends eqLogic {
 
 			} // foreach retrivied cmd
 		} // matches
-	  
+
 		// create cmd ACTION
 		$cmdActions0xac = [
 		  "marche" =>			  [
@@ -579,8 +577,6 @@ class mideawifi extends eqLogic {
 		  $refresh->save();
 		} // create cmds
 	  
-
-	  
 	} //createCmd()
 	
   
@@ -730,13 +726,13 @@ class mideawifi extends eqLogic {
 			log::add('mideawifi', 'debug', 'midea-beautiful-air-cli set --ip ' . $ip . ' --token ' . $token . ' --key ' . $key . ' --' . $cmdLabel . ' ' . $cmdValue . $additionalParams);
 			$data = curlMideawifiDocker("/set_appliance_attribute", array("ipaddress" => $ip, "token" => $token, "key" => $key, "commands" => $command . $additionalParams));
 			log::add('mideawifi', 'debug', "Data => " . $data);
-		} else if(!empty($id) && !empty($accountmail) && !empty($accountpass)) {
+		} else if(!empty($ip) && !empty($accountmail) && !empty($accountpass)) {
 			log::add('mideawifi', 'debug', '[ENDPOINT] /set_appliance_attribute_with_account');
-			log::add('mideawifi', 'debug', 'midea-beautiful-air-cli set --id ' . $id . ' --account ' . $accountmail . ' --password ' . $accountpass . ' --' . $cmdLabel . ' ' . $cmdValue . ' --cloud');
-			$data = curlMideawifiDocker("/set_appliance_attribute_with_account", array("applianceid" => $id, "accountmail" => $accountmail, "accountpass" => $accountpass, "commands" => $command . $additionalParams));
+			log::add('mideawifi', 'debug', 'midea-beautiful-air-cli set --ip ' . $ip . ' --account ' . $accountmail . ' --password ****** --' . $cmdLabel . ' ' . $cmdValue);
+			$data = curlMideawifiDocker("/set_appliance_attribute_with_account", array("ipaddress" => $ip, "accountmail" => $accountmail, "accountpass" => $accountpass, "commands" => $command . $additionalParams));
 			log::add('mideawifi', 'debug', "Data => " . $data);
 		} else {
-			log::add('mideawifi', 'debug', "Can't update $id, missing:<br/> Either => credentials + appliance id <br/> Either => token + key + ip");
+			log::add('mideawifi', 'debug', "Can't update $id, missing:<br/> Either => credentials + ip <br/> Either => token + key + ip");
 			return; // can't update
 		}
 
