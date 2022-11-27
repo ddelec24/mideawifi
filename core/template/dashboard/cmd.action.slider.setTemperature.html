@@ -38,15 +38,17 @@
 		});
 
 		$('button.plus').on('click', function() {
-			var newValue = ($('.cmd[data-cmd_id=#id#] .state').text() != "") ? (parseInt($('.cmd[data-cmd_id=#id#] .state').text(), 10) + 1) : 17;
+          	let state = $(this).parent().children('.cmd[data-cmd_id=#id#] .state');
+			var newValue = (state.text() != "") ? (parseInt(state.text(), 10) + 1) : 17;
           	if(newValue > 16 && newValue < 31)
-				$('.cmd[data-cmd_id=#id#] .state').text(newValue);
+				state.text(newValue);
 		});
 
 		$('button.moins').on('click', function() {
-			var newValue = ($('.cmd[data-cmd_id=#id#] .state').text() != "") ? (parseInt($('.cmd[data-cmd_id=#id#] .state').text(), 10) - 1) : 17;
+          	let state = $(this).parent().children('.cmd[data-cmd_id=#id#] .state');
+			var newValue = (state.text() != "") ? (parseInt(state.text(), 10) - 1) : 17;
           	if(newValue > 16 && newValue < 31)
-				$('.cmd[data-cmd_id=#id#] .state').text(newValue);
+				state.text(newValue);
 		});
 	</script>
 </div>
