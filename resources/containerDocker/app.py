@@ -174,13 +174,13 @@ def set_appliance_attribute_with_account():
 	if not request.is_json:
 		return jsonify({"status": "nok", "response": "invalid json post"}), 400
 
-	APPLIANCE_ID = request.json.get('applianceid', None)
+	IP_ADDRESS = request.json.get('ipaddress', None)
 	ACCOUNT_EMAIL = request.json.get('accountmail', None)
 	PASSWORD = request.json.get('accountpass', None)
 	COMMANDS = request.json.get('commands', None)
 
-	if not APPLIANCE_ID:
-		return jsonify({"status": "nok", "response":"Missing params: id appliance"}), 400
+	if not IP_ADDRESS:
+		return jsonify({"status": "nok", "response":"Missing params: ip address"}), 400
 	if not ACCOUNT_EMAIL:
 		return jsonify({"status": "nok", "response":"Missing params: email"}), 400
 	if not PASSWORD:
@@ -189,7 +189,7 @@ def set_appliance_attribute_with_account():
 		return jsonify({"status": "nok", "response":"Missing params: command"}), 400
 
 	currentTime = time.time();
-	stream = os.popen('midea-beautiful-air-cli set --id ' + APPLIANCE_ID + ' --account ' + ACCOUNT_EMAIL + ' --password ' + PASSWORD + ' ' + COMMANDS + ' --cloud')
+	stream = os.popen('midea-beautiful-air-cli set --ip ' + IP_ADDRESS + ' --account ' + ACCOUNT_EMAIL + ' --password ' + PASSWORD + ' ' + COMMANDS)
 	output = stream.read()
 	latency = round(time.time() - currentTime, 3);
 
