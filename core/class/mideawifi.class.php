@@ -647,6 +647,7 @@ class mideawifi extends eqLogic {
 				$cmdLabel = "target-temperature";
 				$cmdValue = strval(floor($val * 2) / 2); // 0.5 floor
 				self::createAndUpdateCmd(false); // update datas before sending new vals
+            	$this->checkAndUpdateCmd('target', $cmdValue);
 				break;
 		  case "setMode":
 				$cmdLabel = "mode";
@@ -775,7 +776,6 @@ class mideawifiCmd extends cmd {
 				$temperature = isset($_options['text']) ? $_options['text'] : $_options['slider'];  // scenario compatibility
 				if($temperature < 16 || $temperature > 30)
 					return;
-				$eqLogic->checkAndUpdateCmd('target', $temperature);
 				$eqLogic->sendCmd('setTemperature', $temperature);
 				break;
             
