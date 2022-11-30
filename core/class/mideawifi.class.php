@@ -608,12 +608,20 @@ public function createAndUpdateCmd($bCreateCmd = true) {
 		Low = 40
 		Silent = 20
 		*/
-		"setFanSpeed" =>		  [
+		"setFanSpeed" =>
+      		[
 			"type" => "action", "subType" => "select", "name" => "Vitesse ventilation",
 			"order" => 54, "visible" => 1, "historized" => 0,
 			"display" => ["forceReturnLineBefore" => 1, "forceReturnLineAfter" => 1],
 			"configuration" => ["listValue" => "102|Automatique;80|Rapide;60|Normal;40|Lent;20|Silencieux"],
 			"value" => $this->getCmd(null, "fan")->getId(),
+			"template" => ["dashboard" => "default"] 
+		],
+		"customCommands" =>
+      		[
+			"type" => "action", "subType" => "other", "name" => "Commandes personnalisées",
+			"order" => 999, "visible" => 0, "historized" => 0,
+			"display" => ["forceReturnLineBefore" => 1, "forceReturnLineAfter" => 1],
 			"template" => ["dashboard" => "default"] 
 		],
 	];
@@ -763,6 +771,8 @@ public function sendCmd($cmd, $val = "") {
 			$cmdLabel = "fahrenheit";
 			$cmdValue = "0";
 			break;
+      		case "customCommands":
+        		break;
 		/*case "ecoOn":
 			$cmdLabel = "eco-mode";
 			$cmdValue = "1";
@@ -777,24 +787,29 @@ public function sendCmd($cmd, $val = "") {
 		return;
 	}
 	
-	$command = "--$cmdLabel $cmdValue ";
-	log::add('mideawifi', 'debug', "commande à envoyer: $command");
-	
-	if($cmdLabel == "" || $cmdValue == "")
-	return;
-	
-	// when set a new lower temp target, a bug occurs. forcing eco-mode state fix that
-	$additionalParams = "";
-	if($cmd == "setTemperature") {
-		$currentMode = $this->getCmd(null, "mode")->execCmd();
-		if($currentMode == 2) { // eco mode exists only in cooling mode
-			$cmdEco = $this->getCmd(null, "eco");
-			$isEco = $cmdEco->execCmd();
-			$additionalParams = ($isEco) ? "--eco-mode 1" : "--eco-mode 0";
-		} else {
-			$additionalParams = "--eco-mode 0";
-		}
-	}
+  	$additionalParams = "";
+
+  	if($cmd == "customCommands") {
+      $command = trim($val);
+    } else {
+      $command = "--$cmdLabel $cmdValue ";
+      log::add('mideawifi', 'debug', "commande à envoyer: $command");
+
+      if($cmdLabel == "" || $cmdValue == "")
+      return;
+
+      // when set a new lower temp target, a bug occurs. forcing eco-mode state fix that
+      if($cmd == "setTemperature") {
+          $currentMode = $this->getCmd(null, "mode")->execCmd();
+          if($currentMode == 2) { // eco mode exists only in cooling mode
+              $cmdEco = $this->getCmd(null, "eco");
+              $isEco = $cmdEco->execCmd();
+              $additionalParams = ($isEco) ? "--eco-mode 1" : "--eco-mode 0";
+          } else {
+              $additionalParams = "--eco-mode 0";
+          }
+      }
+    }
 	
 	if(!empty($ip) && !empty($token) && !empty($key)) {
 		log::add('mideawifi', 'debug', '[ENDPOINT] /set_appliance_attribute');
@@ -920,7 +935,9 @@ class mideawifiCmd extends cmd {
 				$eqLogic->checkAndUpdateCmd('F', 0);
 				$eqLogic->sendCmd('fahrenheitOff');
 				break;
-			
+          		case 'customCommands':
+            			$eqLogic->sendCmd('customCommands', $_options['text']);
+            			break;
 			/*case 'ecoOn':
 				log::add('mideawifi', 'debug', "Action ecoOn");
 				$currentMode = $eqLogic->getCmd(null, "mode")->execCmd(); // @TODO verif si nécessaire de mettre ->execCmd() ???
