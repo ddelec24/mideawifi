@@ -86,42 +86,11 @@ function addCmdToTable(_cmd) {
 	})
 }
 
-<<<<<<< HEAD
-$('.eqLogicAttr[data-l1key=configuration][data-l2key=hexadecimalType]').on('change',function(){
-	type = $(this).value()
-	var humanType = {'0xac': 'Climatiseur', '0xa1': 'Déshumidificateur'};
-	$("#nameType").html(humanType[type]);
-	$("#imgAppareil").attr('src', 'plugins/mideawifi/core/images/' + type + '.png');
-});
-
-$('.eqLogicAttr[data-l1key=configuration][data-l2key=version]').on('change',function(){
-	version = $(this).value()
-	var cloudVersion = (version == 'v2') ? 'Non' : 'Oui'
-	;
-	$("#cloudVersion").html(cloudVersion);
-	if(version != 'v2') {
-		$("#cloudVersion").removeClass('label-primary').addClass('label-warning');
-		$('.noneCloudOptions').hide();
-	} else {
-		$("#cloudVersion").removeClass('label-warning').addClass('label-primary');
-		$('.noneCloudOptions').show();
-	}
-
-});
-
-
-// Lance un scan Midea
-$('.eqLogicAction[data-action=scanMideaDevices]').on('click', function() {
-	$('.eqLogicAction span:first').text("{{Scan en cours...}}").css({'color' : 'red'});
-	$('.eqLogicAction i:first').css({'color' : 'red'});
-	runMideaDiscovery();
-=======
 $('.eqLogicAttr[data-l1key=configuration][data-l2key=model]').on('change', function(){
 	type = $(this).value();
 	var humanType = {'0xac': 'Climatiseur', '0xa1': 'Déshumidificateur'};
 	$('.eqLogicAttr[data-l1key=configuration][data-l2key=modelHuman]').text(humanType[type]);
 	$("#imgAppareil").attr('src', 'plugins/mideawifi/data/' + type + '.png');
->>>>>>> alpha
 });
 
 $('.eqLogicAction[data-action=discover]').on('click', function() {
@@ -151,31 +120,6 @@ function discover() {
 				return;
 			}
 			console.log(data);
-<<<<<<< HEAD
-
-			if(data.result.new == 0){
-				$('#div_results').empty().append("<center><span style='color:#767676;font-size:1.2em;font-weight: bold;'>{{Aucun nouvel appareil détecté}}</span></center>");
-				return;
-			} else {
-				var plurilizedNewDevices = (data.result.new == 1) ? "Nouvel appareil détecté" : "Nouveaux appareils détectés";
-				$('#div_results').empty().append("<center><span style='color:#767676;font-size:1.2em;font-weight: bold;'> " + data.result.new + "{{ " + plurilizedNewDevices + "}}</span></center>");
-			}
-
-
-			// create div container for results
-			$("#div_results").append('<div class="eqLogicThumbnailContainer" id="newEqDetected" style="position: relative; height: 173px;"></div>');
-
-			var html = '';
-			var currentLeft = 0;
-			for (var i in data.result.devices) {
-
-				supported = true;
-				redColor = '';
-				if(data.result.devices[i].supported == "unsupported") {
-					$('#div_alert').showAlert({message: "Equipement " + data.result.devices[i].id + " détecté mais à priori non supporté ou utilisation du cloud!", level: 'danger'});
-					supported = false;
-				}
-=======
 			countResults = data.result.newEq + " {{équipement(s) trouvé(s) lors de la recherche automatique}}.";
 			$('.infoCountResults').text(countResults);
 
@@ -196,7 +140,6 @@ function discover() {
 			});
           	containerDiv += '</div>';
 			$('.infoCountResults').append(containerDiv);
->>>>>>> alpha
 
 
 		},

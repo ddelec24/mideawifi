@@ -88,14 +88,9 @@ $eqLogics = eqLogic::byType($plugin->getId());
 		<div class="tab-content">
 			<!-- Onglet de configuration de l équipement -->
 			<div role="tabpanel" class="tab-pane active" id="eqlogictab">
-<<<<<<< HEAD
-				<br/>
-				<form class="form-horizontal col-md-8">
-=======
 				<!-- Partie gauche de l'onglet "Equipements" -->
 				<!-- Paramètres généraux et spécifiques de l'équipement -->
 				<form class="form-horizontal">
->>>>>>> alpha
 					<fieldset>
 						<div class="col-lg-6">
 							<legend><i class="fas fa-wrench"></i> {{Paramètres généraux}}</legend>
@@ -208,59 +203,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									</div>
 								</div>
 							</div>
-<<<<<<< HEAD
-						</div>
-						<div class="form-group">
-							<label class="col-sm-3 control-label">{{ID unique}}</label>
-							<div class="col-sm-3">
-								<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="id" />
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-3 control-label">{{Port}}</label>
-							<div class="col-sm-3">
-								<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="port" />
-							</div>
-						</div>
-						<div class="form-group noneCloudOptions">
-							<label class="col-sm-3 control-label">{{Type de ventilation possible}}</label>
-							<div class="col-sm-3">
-								<?php $currentSwingmode = jeedom::getConfiguration('swingmode'); ?>
-								<select id="swingmode" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="swingmode">
-                                  <option value="Vertical">Vertical</option>
-                                  <option value="Horizontal">Horizontal</option>
-                                  <option value="Both">Les deux</option>
-                                </select>
-							</div>
-						</div>
-						<div class="alert-info bg-success" style="margin-top: 2em">
-							<em>* Si l'adresse IP n'est plus correcte, relancez simplement un scan et elle se mettra à jour.<br />
-							Il est conseillé de mettre une ip fixe (voir dans la configuration de l'appareil Midea) ou configurer des baux DHCP statiques (voir documentation de votre routeur)</em>
-						</div>
-
-					</fieldset>
-				</form>
-				<legend><i class="fas fa-info"></i> {{Informations}}</legend>
-				<form class="form-horizontal col-md-4">
-					<label class="col-sm-3 control-label">{{Type d'équipement}}</label>
-					<div class="col-sm-3">
-						<input type="hidden" class="eqLogicAttr cmdAttr" data-l1key="configuration" data-l2key="hexadecimalType" />
-						<div class="form-group cmdAttr label label-primary" id="nameType" style="font-size : 1em"></div>
-						<div class="form-group">
-						<img src="plugins/mideawifi/core/images/0xac.png" data-original=".png" id="imgAppareil" class="img-responsive" style="width:120px" onerror="this.src='plugins/mideawifi/core/images/0xac.png'" /></div>
-					</div>
-				</form>
-				<form class="form-horizontal col-md-4" style="margin-top: 20px;">
-					<label class="col-sm-3 control-label">{{Cloud nécessaire}}</label>
-					<div class="col-sm-3">
-						<input type="hidden" class="eqLogicAttr cmdAttr" data-l1key="configuration" data-l2key="version" />
-						<div class="form-group cmdAttr label label-primary" id="cloudVersion" style="font-size : 1em"></div>
-					</div>
-				</form>
-			</div>
-			<div role="tabpanel" class="tab-pane" id="commandtab">
-				<a class="btn btn-success btn-sm cmdAction pull-right" data-action="add" style="margin-top:5px;"><i class="fa fa-plus-circle"></i> {{Commandes}}</a><br/><br/>
-=======
 						-->
 					</div>
 
@@ -305,7 +247,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
 			<a class="btn btn-default btn-sm pull-right cmdAction" data-action="add" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter une commande}}</a>
 			<br><br>
 			<div class="table-responsive">
->>>>>>> alpha
 				<table id="table_cmd" class="table table-bordered table-condensed">
 					<thead>
 						<tr>

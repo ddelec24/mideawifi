@@ -133,36 +133,6 @@ $("#prepareDocker").click(function(e) {
   $(this).removeClass('btn-primary').addClass('btn-warning');
   $(this).text("Merci de patienter, préparation en cours...");
   
-<<<<<<< HEAD
-  <form class="form-horizontal">
-    <fieldset>
-        <div class="form-group"><label class="col-lg-6 control-label">{{Identifiants de connexion au cloud}}</label></div>
-        <div class="form-group">
-            <label class="col-lg-4 control-label">{{Adresse mail}}</label>
-            <div class="col-lg-4">
-                <input class="configKey form-control" data-l1key="mailCloud" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-lg-4 control-label">{{Mot de passe}} *</label>
-            <div class="col-lg-4">
-                <input class="configKey form-control" data-l1key="passCloud" />
-            </div>
-        </div>
-  </fieldset>
-
-  <div class="form-group"><label class="col-lg-8 control-label"><em>* Le mot de passe apparaitra ensuite hashé, le plugin ne stock pas votre mot de passe en clair.</em></label></div>
-
-    <!-- <fieldset>
-        <div class="form-group">
-            <label class="col-lg-4 control-label">{{Timeout scan}}</label>
-            <div class="col-lg-2">
-                <input class="configKey form-control" data-l1key="timeout" />
-            </div>
-        </div>
-  </fieldset> -->
-</form>
-=======
   prepareDocker(this);
 });
 
@@ -216,4 +186,3 @@ function startContainer(that) {
 }
 
 </script>
->>>>>>> alpha
