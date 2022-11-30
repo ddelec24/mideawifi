@@ -789,8 +789,9 @@ public function sendCmd($cmd, $val = "") {
 	
   	$additionalParams = "";
 
-  	if($cmd == "customCommands") {
+    if($cmd == "customCommands") {
       $command = trim($val);
+      $cmdLabel = substr($command, -2); // just to display cmd on debug log
     } else {
       $command = "--$cmdLabel $cmdValue ";
       log::add('mideawifi', 'debug', "commande à envoyer: $command");
