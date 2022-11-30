@@ -1,20 +1,42 @@
 {
 	"id" : "mideawifi",
 	"name" : "Midea Wifi",
-	"description" : "Permet de lister et contrôler vos clims Midea ayant un module WiFi",
+	"description" : {
+		"fr_FR": "Permet de lister et contrôler vos clims Midea ayant un module WiFi"
+	},
 	"licence" : "AGPL",
-	"author" : "Jayknight & DDelec24",
-	"require" : "3.3",
+	"author" : "Jeedom SAS",
+	"require" : "4.2",
 	"category" : "wellness",
 	"hasDependency" : true,
 	"hasOwnDeamon" : false,
 	"maxDependancyInstallTime" : 0,
-	"changelog" : "https://ddelec24.github.io/mideawifi/#language#/changelog",
-	"documentation" : "https://ddelec24.github.io/mideawifi/#language#/",
+	"changelog" : "https://ddelec24.github.io/docs-jeedom/mideawifi/#language#/changelog",
+	"documentation" : "https://ddelec24.github.io/docs-jeedom/mideawifi/#language#/",
+	"changelog_beta" : "https://ddelec24.github.io/docs-jeedom/mideawifi/#language#/beta/changelog",
+	"documentation_beta" : "https://ddelec24.github.io/docs-jeedom/mideawifi/#language#/beta/",
 	"link" : {
-		"forum" : "https://community.jeedom.com",
-		"video" : ""
+		"forum":"https://community.jeedom.com/tag/plugin-mideawifi"
 	},
-	"language" : ["fr_FR","en_US","de_DE","sp_SP","ru_RU","id_ID","it_IT"],
-	"compatibility" : ["miniplus","smart","rpi","docker","diy","mobile", "v4"]
+	"language": [
+		"fr_FR",
+		"en_US",
+		"es_ES",
+		"de_DE",
+		"ru_RU",
+		"id_ID",
+		"it_IT",
+		"ja_JP",
+		"pt_PT"
+	],
+	"compatibility": [
+		"miniplus",
+		"smart",
+		"rpi",
+		"docker",
+		"diy",
+		"mobile",
+		"v4",
+		"atlas"
+	]
 }

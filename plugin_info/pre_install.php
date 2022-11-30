@@ -16,10 +16,8 @@
 * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
 */
 
-if (!isConnect('admin')) {
-    throw new Exception('{{401 - Accès non autorisé}}');
+require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
+
+// Fonction exécutée automatiquement avant la mise à jour du plugin
+function mideawifi_pre_update() {
 }
-?>
-
-Exemple de modale
-
