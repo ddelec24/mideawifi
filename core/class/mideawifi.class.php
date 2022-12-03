@@ -284,13 +284,13 @@ public function createAndUpdateCmd($bCreateCmd = true) {
 			"display" => ["forceReturnLineBefore" => 0],
 			"template" => ["dashboard" => "default"] 
 		],
-		"ion" =>       
+		/*"ion" =>       
 		[
 			"type" => "info", "subType" => "binary", "name" => "ION",
 			"order" => 20, "visible" => 0, "historized" => 0,
 			"display" => ["forceReturnLineBefore" => 0],
 			"template" => ["dashboard" => "default"] 
-		],
+		],*/
 		"filter" =>       
 		[
 			"type" => "info", "subType" => "binary", "name" => "Alerte Filtre",
@@ -584,7 +584,7 @@ public function createAndUpdateCmd($bCreateCmd = true) {
 					"value" => $this->getCmd(null, "pump")->getId(),
 					"template" => ["dashboard" => "mideawifi::pump", "mobile" => "mideawifi::pump"] 
 				],
-				"ionOn" =>			  
+				/*"ionOn" =>			  
 				[
 					"type" => "action", "subType" => "other", "name" => "Ion on",
 					"order" => 6, "visible" => 1, "historized" => 0,
@@ -599,7 +599,7 @@ public function createAndUpdateCmd($bCreateCmd = true) {
 					"display" => [ "forceReturnLineBefore" => 0, "forceReturnLineAfter" => 1],
 					"value" => $this->getCmd(null, "ion")->getId(),
 					"template" => ["dashboard" => "mideawifi::ion", "mobile" => "mideawifi::ion"] 
-				],
+				],*/
 				"comfortSleepOn" => 			  
 				[
 					"type" => "action", "subType" => "other", "name" => "Sleep on",
@@ -766,6 +766,12 @@ public function sendCmd($cmd, $val = "") {
 			self::createAndUpdateCmd(false); // update datas before sending new vals
 			$this->checkAndUpdateCmd('target', $cmdValue);
 			break;
+		case "setHumidity":
+			$cmdLabel = "target-humidity";
+			$cmdValue = strval($val);
+			self::createAndUpdateCmd(false); // update datas before sending new vals
+			$this->checkAndUpdateCmd('target%', $cmdValue);
+			break;
 		case "setMode":
 			$cmdLabel = "mode";
 			$cmdValue = $val; 
@@ -830,14 +836,14 @@ public function sendCmd($cmd, $val = "") {
 			$cmdLabel = "pump";
 			$cmdValue = "0";
 			break;
-		case "ionOn":
+		/*case "ionOn":
 			$cmdLabel = "ion-mode";
 			$cmdValue = "1";
 			break;
 		case "ionOff":
 			$cmdLabel = "ion-mode";
 			$cmdValue = "0";
-			break;
+			break;*/
       	case "customCommands":
         	break;
 
@@ -927,7 +933,14 @@ class mideawifiCmd extends cmd {
 				return;
 				$eqLogic->sendCmd('setTemperature', $temperature);
 				break;
-							
+						
+			case 'setHumidity':
+				$humidity = isset($_options['text']) ? $_options['text'] : $_options['slider'];  // scenario compatibility
+				if($humidity < 0 || $humidity > 100)
+					return;
+				$eqLogic->sendCmd('setHumidity', $humidity);
+				break;
+
 			case 'setMode':
 				$mode = isset($_options['select']) ? $_options['select'] : $_options['slider']; // scenario compatibility
 				$eqLogic->checkAndUpdateCmd('mode', $mode);
@@ -1014,7 +1027,7 @@ class mideawifiCmd extends cmd {
 				$eqLogic->sendCmd('pumpOff');
 				break;
 																	
-			case 'ionOn':
+			/*case 'ionOn':
 				$eqLogic->checkAndUpdateCmd('ion', 1);
 				$eqLogic->sendCmd('ionOn');
 				break;
@@ -1022,7 +1035,7 @@ class mideawifiCmd extends cmd {
 			case 'ionOff':
 				$eqLogic->checkAndUpdateCmd('ion', 0);
 				$eqLogic->sendCmd('ionOff');
-				break;
+				break;*/
 
           	case 'customCommands':
             	$eqLogic->sendCmd('customCommands', $_options['text']);
