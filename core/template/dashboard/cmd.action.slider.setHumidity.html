@@ -1,0 +1,54 @@
+<style type="text/css">
+	button.plus, button.moins {
+		margin: 10px 5px;
+	}
+</style>
+
+<div class="cmd cmd-widget #history#" data-type="action" data-subtype="slider" data-template="line" data-cmd_id="#id#" data-cmd_uid="#uid#" data-version="#version#" data-eqLogic_id="#eqLogic_id#">
+	<div><span class="cmdName #hide_name#">#name_display# </span> </div>
+	<div class="content-xs">
+		<button type="button" class="moins btn">-</button> 
+		<strong class="state">17</strong> #unite# 
+		<button type="button" class="plus btn">+</button> 
+		<button type="submit" class="execute btn btn-primary">OK</button>
+	</div>
+	<script>
+		jeedom.cmd.update['#id#'] = function(_options) {
+			var cmd = $('.cmd[data-cmd_id=#id#]')
+			cmd.attr('title','Date de valeur : '+_options.valueDate+'<br/>Date de collecte : '+_options.collectDate)
+			cmd.find('.state').empty().append(_options.display_value);
+			if(_options.alertLevel){
+				if(_options.alertLevel == 'warning'){
+					cmd.find('.content-xs').addClass('label label-warning')
+					cmd.attr('data-alertlevel','warning');
+				}else if(_options.alertLevel == 'danger'){
+					cmd.find('.content-xs').addClass('label label-danger')
+					cmd.attr('data-alertlevel','danger');
+				}else{
+					cmd.find('.content-xs').removeClass('label label-warning label-danger')
+					cmd.attr('data-alertlevel','none');
+				}
+			}
+		}
+		jeedom.cmd.update['#id#']({display_value:'#state#',valueDate:'#valueDate#',collectDate:'#collectDate#',alertLevel:'#alertLevel#'})
+
+
+		$('.cmd[data-cmd_id=#id#] .execute').on('click', function() {
+			jeedom.cmd.execute({id: '#id#', value: {text: $('.cmd[data-cmd_id=#id#] .state').text()}});
+		});
+
+		$('button.plus').on('click', function() {
+          	let state = $(this).parent().children('.cmd[data-cmd_id=#id#] .state');
+			var newValue = (state.text() != "") ? (parseInt(state.text(), 10) + 1) : 50;
+          	if(newValue >= 0 && newValue < 101)
+				state.text(newValue);
+		});
+
+		$('button.moins').on('click', function() {
+          	let state = $(this).parent().children('.cmd[data-cmd_id=#id#] .state');
+			var newValue = (state.text() != "") ? (parseInt(state.text(), 10) - 1) : 50;
+          	if(newValue >= 0 && newValue < 101)
+				state.text(newValue);
+		});
+	</script>
+</div>
