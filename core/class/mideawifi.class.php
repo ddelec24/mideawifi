@@ -640,7 +640,7 @@ public function createAndUpdateCmd($bCreateCmd = true) {
 					"value" => $this->getCmd(null, "target%")->getId(),
 					"unite" => "%",
 					"configuration" => ["minValue" => 0, "maxValue" => 100],
-					"template" => ["dashboard" => "mideawifi::setTemperature", "mobile" => "mideawifi::setTemperature"] 
+					"template" => ["dashboard" => "mideawifi::setHumidity", "mobile" => "mideawifi::setHumidity"] 
 				],
 				/*
 				Déshumidificateur = 1
