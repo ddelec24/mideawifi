@@ -39,15 +39,15 @@
 
 		$('button.plus').on('click', function() {
           	let state = $(this).parent().children('.cmd[data-cmd_id=#id#] .state');
-			var newValue = (state.text() != "") ? (parseInt(state.text(), 10) + 1) : 17;
-          	if(newValue > 16 && newValue < 31)
+			var newValue = (state.text() != "") ? (parseInt(state.text(), 10) + 5) : 50;
+          	if(newValue >= 0 && newValue < 101)
 				state.text(newValue);
 		});
 
 		$('button.moins').on('click', function() {
           	let state = $(this).parent().children('.cmd[data-cmd_id=#id#] .state');
-			var newValue = (state.text() != "") ? (parseInt(state.text(), 10) - 1) : 17;
-          	if(newValue > 16 && newValue < 31)
+			var newValue = (state.text() != "") ? (parseInt(state.text(), 10) - 5) : 50;
+          	if(newValue >= 0 && newValue < 101)
 				state.text(newValue);
 		});
 	</script>

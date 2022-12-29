@@ -1,0 +1,36 @@
+<div class="input-group input-group-sm" style="width: 100%">
+  <span class="input-group-addon roundedLeft" style="width: 140px">#slider_placeholder# <sup><i class="fas fa-question-circle tooltips" title="La valeur envoyée à votre appareil sera arrondi avec un pas de 20 (20, 40, 60...)"></i></sup> </span> 
+  <input value="#slider#" class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="slider" data-cmd_id="#id#" data-uid="#uid#" />
+  <span class="input-group-btn">
+    <button class="btn btn-default listCmdInfo roundedRight" type="button" tooltip="{{Sélectionner la commande}}" data-cmd_id="#id#"  data-uid="#uid#"><i class="fas fa-list-alt"></i></button>
+  </span>
+</div>
+<div class="input-group input-group-sm" style="width: 100%">
+	<span class="input-group-addon" style="width: 140px">Vitesse Automatique</span> <input type="checkbox" class="autoFan expressionAttr form-check-input" data-l1key="options" data-l2key="checkAutoFan" data-cmd_id="#id#" data-uid="#uid#" /> 
+</div>
+
+<script>
+  $(function() {
+      if($('.expressionAttr[data-uid=#uid#]').val() == '102') {
+          $('.autoFan[data-uid=#uid#]').prop( "checked", true );
+          $('.expressionAttr[data-uid=#uid#]').val('102').css('font-style', 'italic').prop('readonly', true);
+      }
+  });
+  
+  $('.listCmdInfo[data-uid=#uid#]').off('click').on('click', function() {
+    jeedom.cmd.getSelectModal({cmd: {type: 'info'}}, function(result) {
+      $('.expressionAttr[data-l1key=options][data-l2key=slider][data-uid=#uid#]').atCaret('insert', result.human);
+    });
+  });
+  
+  $('.autoFan[data-uid=#uid#]').on('change', function() {
+  	if($(this).is(':checked')) {
+    	$('.expressionAttr[data-uid=#uid#]').val('102').css('font-style', 'italic').prop('readonly', true);
+      
+    } else {
+      $('.expressionAttr[data-uid=#uid#]').css('font-style', 'normal').prop('readonly', false);
+    }
+  });
+  
+
+</script>
