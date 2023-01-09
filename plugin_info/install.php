@@ -19,31 +19,70 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 // Fonction exécutée automatiquement après l'installation du plugin
 function mideawifi_install() {
-  $portDocker = config::byKey('portDocker', 'mideawifi');
-  if(empty($portDocker))
-    config::save('portDocker', '5000', 'mideawifi');
-  
+    $portDocker = config::byKey('portDocker', 'mideawifi');
+    if(empty($portDocker))
+      config::save('portDocker', '5000', 'mideawifi');
+
+    $cronMideawifi = config::byKey('cronMideawifi', 'mideawifi');
+    if(empty($cronMideawifi)) {
+        $cron = cron::byClassAndFunction('mideawifi', 'pull');
+        if (!is_object($cron)) {
+            $cron = new cron();
+            $cron->setClass('mideawifi');
+            $cron->setFunction('pull');
+            $cron->setEnable(1);
+            $cron->setDeamon(0);
+            $cron->setDeamonSleepTime(0);
+            $cron->setSchedule('*/5 * * * *');
+            $cron->setTimeout(2);
+            $cron->save();
+        }
+    }
+  	$cron->start();
 }
 
 // Fonction exécutée automatiquement après la mise à jour du plugin
 function mideawifi_update() {
-  	$portDocker = config::byKey('portDocker', 'mideawifi');
-	foreach (mideawifi::byType('mideawifi', true) as $mideawifi) {
-		try {
-          if(empty($portDocker)) {
-            $mideawifi->remove(); //ancienne version sans docker on supprime léquipement
-          } else {
-			$mideawifi->save();
-          }
-		} catch (Exception $e) {
+      $portDocker = config::byKey('portDocker', 'mideawifi');
+      foreach (mideawifi::byType('mideawifi', true) as $mideawifi) {
+          try {
+            if(empty($portDocker)) {
+              $mideawifi->remove(); //ancienne version sans docker on supprime léquipement
+            } else {
+              $mideawifi->save();
+            }
+          } catch (Exception $e) {
 
-		}
-	}
+          }
+      }
+
+    if(empty($portDocker))
+      	config::save('portDocker', '5000', 'mideawifi');
+
+    $cronMideawifi = config::byKey('cronMideawifi', 'mideawifi');
+    if(empty($cronMideawifi)) {
+        $cron = cron::byClassAndFunction('mideawifi', 'pull');
+        if (!is_object($cron)) {
+            $cron = new cron();
+            $cron->setClass('mideawifi');
+            $cron->setFunction('pull');
+            $cron->setEnable(1);
+            $cron->setDeamon(0);
+            $cron->setDeamonSleepTime(0);
+            $cron->setSchedule('*/5 * * * *');
+            $cron->setTimeout(2);
+            $cron->save();
+        }
+    }
   
-  if(empty($portDocker))
-    config::save('portDocker', '5000', 'mideawifi');
+  	$cron->start();
 }
 
 // Fonction exécutée automatiquement après la suppression du plugin
 function mideawifi_remove() {
+  	$cron = cron::byClassAndFunction('mideawifi', 'pull');
+  	if (is_object($cron)) {
+      	$cron->stop();
+  		$cron->remove();
+    }
 }

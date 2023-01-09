@@ -75,6 +75,19 @@ if($isDockerRunning) {
     </div>
     <hr/>
     <div class="form-group">
+      <label class="col-md-4 control-label">{{Récupération des infos}}
+        <sup><i class="fas fa-question-circle tooltips" title="{{Choix de la fréquence d'actualisation}}"></i></sup>
+      </label>
+      <div class="col-md-4">
+        <select class="configKey form-control" data-l1key="cronMideawifi">
+        	<option value="cron1">1 minute</option>
+          	<option value="cron5">5 minutes</option>
+          	<option value="cron10">10 minutes</option>
+        </select>
+      </div>
+    </div>
+    <hr/>
+    <div class="form-group">
       <label class="col-md-4 control-label">{{Port de communication}}
         <sup><i class="fas fa-question-circle tooltips" title="{{Défaut: 5000, ne changez que si le port est déjà utilisé}}"></i></sup>
       </label>
