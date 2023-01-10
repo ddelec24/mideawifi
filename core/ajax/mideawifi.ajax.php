@@ -188,7 +188,9 @@ function startMideawifiContainer() {
 function discover() {
   $accountmail = 	trim(config::byKey('accountmail', 'mideawifi'));
   $accountpass = 	trim(config::byKey('accountpass', 'mideawifi'));
-  $data = 			curlMideawifiDocker("/discover", array("accountmail" => $accountmail, "accountpass" => $accountpass)); //, "withapp" => "y"
+  $useMsmartHome = 	(config::byKey('useMsmartHome', 'mideawifi')) ? "y" : "n";
+  log::add("mideawifi", "debug", "MsmartHome: " . $useMsmartHome);
+  $data = 			curlMideawifiDocker("/discover", array("accountmail" => $accountmail, "accountpass" => $accountpass, "withapp" => $useMsmartHome));
 
   log::add("mideawifi", "debug", "[ENDPOINT] /discover : " . $data);
   log::add("mideawifi", "debug", "============================ DISCOVER ============================");

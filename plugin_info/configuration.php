@@ -73,6 +73,14 @@ if($isDockerRunning) {
         <span toggle="#accountpass" class="fa fa-fw fa-eye field-icon toggle-password"></span>
       </div>
     </div>
+    <div class="form-group">
+      <label class="col-md-4 control-label">{{Application MsmartHome}}
+        <sup><i class="fas fa-question-circle tooltips" title="{{Ne cochez cette case que si vos équipements sont appairés avec l'application MsmartHome}}"></i></sup>
+      </label>
+      <div class="col-md-4">
+        <input type="checkbox" class="configKey form-control" data-l1key="useMsmarthome" autocomplete="off" />
+      </div>
+    </div>
     <hr/>
     <div class="form-group">
       <label class="col-md-4 control-label">{{Récupération des infos}}
